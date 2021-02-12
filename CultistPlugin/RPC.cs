@@ -84,6 +84,7 @@ namespace CultistPlugin
                     CLog.Info("Setting Cultist Settings");
                     SetCultistSettings();
                     ConversionsLeft = MaxCultistConversions;
+                    LastConversion = null;
 
                     CLog.Info("Cultist list after cultist set through RPC:");
 
@@ -103,8 +104,7 @@ namespace CultistPlugin
                             for (int i = 0; i < player.myTasks.Count; i++)
                             {
                                 PlayerTask playerTask = player.myTasks[i];
-                                playerTask.OnRemove();
-                                Object.Destroy(playerTask.gameObject);
+                                player.RemoveTask(playerTask);
                             }
 
                             player.myTasks.Clear();
@@ -115,7 +115,6 @@ namespace CultistPlugin
 
                             convertedTask.Text =
                                 "You got converted to the cult.\nHelp your cult leader convert other crewmates.";
-
 
                             player.myTasks.Insert(0, convertedTask);
                         }

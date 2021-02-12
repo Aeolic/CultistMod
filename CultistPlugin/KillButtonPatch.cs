@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using System;
+using HarmonyLib;
 using Hazel;
 using UnityEngine;
 using static CultistPlugin.CultistMod;
@@ -51,6 +52,8 @@ namespace CultistPlugin
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
                             AddCultistToLists(target);
                             ConversionsLeft--;
+                            LastConversion = DateTime.UtcNow;
+
                             if (CheckCultistWin())
                             {
                                 ExecuteCultistWin();
@@ -64,6 +67,7 @@ namespace CultistPlugin
                     {
                         ConversionsLeft--;
                         createNewTask = true;
+                        LastConversion = DateTime.UtcNow;
                     }
 
                     if (createNewTask)

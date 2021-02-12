@@ -33,7 +33,7 @@ namespace CultistPlugin
                     {
                         KillButton.gameObject.SetActive(true);
                         KillButton.isActive = true;
-                        KillButton.SetCoolDown(0f, PlayerControl.GameOptions.KillCooldown + 15.0f);
+                        KillButton.SetCoolDown(PlayerTools.GetConversionCooldown(), PlayerControl.GameOptions.KillCooldown + 15.0f);
                         KillButton.renderer.sprite = convertIcon;
                         KillButton.renderer.color = Palette.EnabledColor;
                         KillButton.renderer.material.SetFloat("_Desat", 0f);

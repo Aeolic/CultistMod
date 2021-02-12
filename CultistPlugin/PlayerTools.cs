@@ -8,6 +8,7 @@ namespace CultistPlugin
     public static class PlayerTools
     {
         public static PlayerControl closestPlayer = null;
+
         public static PlayerControl getPlayerById(byte id)
         {
             foreach (PlayerControl player in PlayerControl.AllPlayerControls)
@@ -17,25 +18,27 @@ namespace CultistPlugin
                     return player;
                 }
             }
+
             return null;
         }
 
-        // public static float GetOfficerKD()
-        // {
-        //     if (ExtraRoles.OfficerSettings.lastKilled == null)
-        //     {
-        //         return ExtraRoles.OfficerSettings.OfficerCD;
-        //     }
-        //     DateTime now = DateTime.UtcNow;
-        //     TimeSpan diff = (TimeSpan)(now - ExtraRoles.OfficerSettings.lastKilled);
-        //
-        //     var KillCoolDown = ExtraRoles.OfficerSettings.OfficerCD * 1000.0f;
-        //     if (KillCoolDown - (float)diff.TotalMilliseconds < 0) return 0;
-        //     else
-        //     {
-        //         return (KillCoolDown - (float)diff.TotalMilliseconds) / 1000.0f;
-        //     }
-        // }
+        public static float GetConversionCooldown()
+        {
+            if (CultistMod.LastConversion == null)
+            {
+                return CultistSettings.CultistConversionCooldown;
+            }
+
+            DateTime now = DateTime.UtcNow;
+            TimeSpan diff = (TimeSpan) (now - CultistMod.LastConversion);
+
+            var KillCoolDown = CultistSettings.CultistConversionCooldown * 1000.0f;
+            if (KillCoolDown - (float) diff.TotalMilliseconds < 0) return 0;
+            else
+            {
+                return (KillCoolDown - (float) diff.TotalMilliseconds) / 1000.0f;
+            }
+        }
 
         public static PlayerControl getClosestPlayer(PlayerControl refplayer)
         {
@@ -46,26 +49,25 @@ namespace CultistPlugin
                 if (player.Data.IsDead) continue;
                 if (player != refplayer)
                 {
-
                     double dist = getDistBetweenPlayers(player, refplayer);
                     if (dist < mindist)
                     {
                         mindist = dist;
                         closestplayer = player;
                     }
-
                 }
-
             }
+
             return closestplayer;
         }
-        
+
         public static double getDistBetweenPlayers(PlayerControl player, PlayerControl refplayer)
         {
             var refpos = refplayer.GetTruePosition();
             var playerpos = player.GetTruePosition();
 
-            return Math.Sqrt((refpos[0] - playerpos[0]) * (refpos[0] - playerpos[0]) + (refpos[1] - playerpos[1]) * (refpos[1] - playerpos[1]));
+            return Math.Sqrt((refpos[0] - playerpos[0]) * (refpos[0] - playerpos[0]) +
+                             (refpos[1] - playerpos[1]) * (refpos[1] - playerpos[1]));
         }
     }
 }

@@ -29,7 +29,8 @@ namespace CultistPlugin
         //TODO swap dummy count for bool "hasDummy"
         public static int ImpostorDummyCount = 0;
         public static bool DisableGameEndDuringMeeting = false;
-        public static int ConversionsLeft;
+        public static int ConversionsLeft { get; set; }
+        public static DateTime? LastConversion { get; set; }
 
         public static bool IsCultist(byte playerId)
         {

@@ -38,7 +38,7 @@ namespace CultistPlugin
             }
         }
     }
-    
+
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.HandleProceed))]
     public class MeetingPatch
     {
@@ -108,6 +108,15 @@ namespace CultistPlugin
                 CLog.Info("End of postfix!");
                 DisableGameEndDuringMeeting = false;
             }
+        }
+    }
+
+    [HarmonyPatch(typeof(ExileController), nameof(ExileController.Begin))]
+    class MeetingEnd
+    {
+        static void Postfix(ExileController __instance)
+        {
+            LastConversion = DateTime.UtcNow.AddMilliseconds(__instance.Duration);
         }
     }
 
