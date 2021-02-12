@@ -2,12 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using HarmonyLib;
-using Reactor;
 using Reactor.Extensions;
 using Reactor.Unstrip;
 using UnityEngine;
-using StringBuilder = Il2CppSystem.Text.StringBuilder;
-using static CultistPlugin.CultistSettings;
 
 namespace CultistPlugin
 {
@@ -24,18 +21,15 @@ namespace CultistPlugin
 
         public static List<byte> CultistList = new List<byte>();
 
-        public static List<String>
-            CultistNameList = new List<String>(); //necessary, because for win condition checks the Ids are unknown
+        //necessary, because for win condition checks the Ids are unknown
+        public static List<String> CultistNameList = new List<String>();
 
         public static bool DidCultistsWin = false;
         public static bool IsLastMurderFromCultistWin = false;
+        //TODO swap dummy count for bool "hasDummy"
         public static int ImpostorDummyCount = 0;
         public static bool DisableGameEndDuringMeeting = false;
         public static int ConversionsLeft;
-
-        public static bool
-            CrewmatesWinWhenImpostorsDead =
-                true; //TODO implement this - obv cult wins if cult > non cult (e.g. 6 players, 1 imp, 3 cult 2 crew, imp gets voted)
 
         public static bool IsCultist(byte playerId)
         {
@@ -85,16 +79,6 @@ namespace CultistPlugin
 
         public static bool CheckCultistWin()
         {
-            CLog.Info("CULTISTS IN LISTS:");
-
-            var x = "";
-            foreach (var name in CultistNameList)
-            {
-                x += name + " ";
-            }
-            CLog.Info(x);
-            
-            
             int alive = 0;
             int cultists = 0;
             foreach (PlayerControl player in PlayerControl.AllPlayerControls)
@@ -141,55 +125,6 @@ namespace CultistPlugin
                 {
                     player.Data.IsImpostor = true;
                 }
-            }
-        }
-
-        // TODO try to get this to work instead of patching AppendTaskText
-        // [RegisterInIl2Cpp]
-        // public class CultTask : ImportantTextTask
-        // {
-        //     public CultTask(IntPtr ptr) : base(ptr)
-        //     {
-        //         CLog.Info("Creating CultTask");
-        //     }
-        // }
-        
-        public static void ClearCultistTasks() //TODO this works, but some error is thrown
-        {
-            foreach (PlayerControl player in PlayerControl.AllPlayerControls)
-            {
-                if (player == null)
-                {
-                    return;
-                }
-                if (IsCultist(player.PlayerId))
-                {
-                    // var removeTask = new List<PlayerTask>();
-                    // foreach (PlayerTask task in player.myTasks)
-                    //     if (task.TaskType != TaskTypes.FixComms && task.TaskType != TaskTypes.FixLights &&
-                    //         task.TaskType != TaskTypes.ResetReactor && task.TaskType != TaskTypes.ResetSeismic &&
-                    //         task.TaskType != TaskTypes.RestoreOxy && task.name != "CultistTask" && task.name != "CultistLeaderTask")
-                    //         removeTask.Add(task);
-                    // foreach (PlayerTask task in removeTask)
-                    // {
-                    //     player.RemoveTask(task);
-                    // }
-                }
-            }
-        }
-
-        [HarmonyPatch(typeof(ImportantTextTask), nameof(ImportantTextTask.AppendTaskText))]
-        public static class TaskPatch
-        {
-            public static bool Prefix(ImportantTextTask __instance, StringBuilder DOJIEDCICAJ)
-            {
-                if (IsCultist(PlayerControl.LocalPlayer.PlayerId))
-                {
-                    DOJIEDCICAJ.AppendLine("[6414C8FF]" + __instance.Text + "[]");
-                    return false;
-                }
-
-                return true;
             }
         }
     }

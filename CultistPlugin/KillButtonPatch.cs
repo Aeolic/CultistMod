@@ -1,8 +1,5 @@
-﻿using System;
-using HarmonyLib;
+﻿using HarmonyLib;
 using Hazel;
-using Reactor;
-using Reactor.Extensions;
 using UnityEngine;
 using static CultistPlugin.CultistMod;
 using static CultistPlugin.CultistSettings;

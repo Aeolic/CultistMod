@@ -1,54 +1,13 @@
 ﻿using HarmonyLib;
-using Hazel;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnhollowerBaseLib;
-using UnityEngine;
-using BepInEx;
-using BepInEx.Configuration;
-using BepInEx.IL2CPP;
-using BepInEx.IL2CPP.UnityEngine;
-using Il2CppDumper;
-using InnerNet;
-using Steamworks;
-using System.CodeDom;
-using System.ComponentModel;
-using System.Net;
-using System.Reflection;
-using UnityEngine.SceneManagement;
-using System.Runtime.InteropServices;
-using System.IO;
-using Reactor;
 
+//this class is copied from https://github.com/NotHunter101/ExtraRolesAmongUs and modified/shortened
 namespace CultistPlugin
 {
     [HarmonyPatch]
     public static class PlayerTools
     {
         public static PlayerControl closestPlayer = null;
-        
-        public static List<PlayerControl> getCrewMates()
-        {
-            List<PlayerControl> CrewmateIds = new List<PlayerControl>();
-            foreach (PlayerControl player in PlayerControl.AllPlayerControls)
-            {
-                bool isInfected = false;
-                if (player.Data.IsImpostor)
-                {
-                    isInfected = true;
-                    break;
-                }
-                if (!isInfected)
-                {
-                    CrewmateIds.Add(player);
-                }
-            }
-            return CrewmateIds;
-        }
-
         public static PlayerControl getPlayerById(byte id)
         {
             foreach (PlayerControl player in PlayerControl.AllPlayerControls)
@@ -100,15 +59,7 @@ namespace CultistPlugin
             }
             return closestplayer;
         }
-
-        public static PlayerControl getPlayerFromId(byte id)
-        {
-            foreach (PlayerControl player in PlayerControl.AllPlayerControls)
-                if (player.PlayerId == id)
-                    return player;
-            return null;
-        }
-
+        
         public static double getDistBetweenPlayers(PlayerControl player, PlayerControl refplayer)
         {
             var refpos = refplayer.GetTruePosition();

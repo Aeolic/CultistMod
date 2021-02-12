@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Linq;
-using BepInEx;
-using BepInEx.IL2CPP;
 using HarmonyLib;
 using Hazel;
 using Reactor;
 using Reactor.Extensions;
-using UnhollowerBaseLib;
-using UnhollowerBaseLib.Attributes;
 using UnityEngine;
 using static CultistPlugin.CultistSettings;
 using static CultistPlugin.CultistMod;
@@ -43,17 +38,7 @@ namespace CultistPlugin
             }
         }
     }
-
-    // [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Method_8)]
-    // public class PopulateButtonsPatch
-    // {
-    //     public void Postfix(MeetingHud __instance)
-    //     {
-    //         
-    //     }
-    // }
-
-
+    
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.HandleProceed))]
     public class MeetingPatch
     {

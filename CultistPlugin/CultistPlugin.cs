@@ -1,17 +1,8 @@
-﻿using System;
-using BepInEx;
-using BepInEx.Configuration;
+﻿using BepInEx;
 using BepInEx.IL2CPP;
 using HarmonyLib;
 using Reactor;
-using Reactor.OxygenFilter;
-using UnityEngine;
 using Essentials.CustomOptions;
-using Hazel;
-using UnhollowerBaseLib;
-using System.Collections.Generic;
-using System.Linq;
-using Reactor.Extensions;
 
 
 namespace CultistPlugin

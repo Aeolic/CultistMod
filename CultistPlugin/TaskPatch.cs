@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using System.Text;
+using HarmonyLib;
 using UnityEngine;
 
 namespace CultistPlugin
@@ -34,6 +35,22 @@ namespace CultistPlugin
                     player.myTasks.Insert(0, convertedTask);
                 }
             }
+        }
+    }
+
+
+    [HarmonyPatch(typeof(ImportantTextTask), nameof(ImportantTextTask.AppendTaskText))]
+    public static class ImportantTextTaskPatch
+    {
+        public static bool Prefix(ImportantTextTask __instance, StringBuilder DOJIEDCICAJ)
+        {
+            if (CultistMod.IsCultist(PlayerControl.LocalPlayer.PlayerId))
+            {
+                DOJIEDCICAJ.AppendLine("[6414C8FF]" + __instance.Text + "[]");
+                return false;
+            }
+
+            return true;
         }
     }
 }
