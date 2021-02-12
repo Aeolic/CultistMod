@@ -8,7 +8,7 @@ namespace CultistPlugin
     {
         static void Postfix(IntroCutscene.CoBegin__d __instance)
         {
-            if (PlayerControl.LocalPlayer == CultistSettings.InitialCultist)
+            if (PlayerControl.LocalPlayer == GameSettings.InitialCultist)
             {
                 __instance.__this.Title.Text = "Cultist";
                 __instance.__this.Title.Color = CultistMod.ModdedPalette.CultistColor;

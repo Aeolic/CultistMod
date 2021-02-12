@@ -1,6 +1,8 @@
 ﻿using HarmonyLib;
 using UnityEngine;
 using static CultistPlugin.CultistMod;
+using static CultistPlugin.GameSettings;
+
 
 namespace CultistPlugin
 {
@@ -11,7 +13,7 @@ namespace CultistPlugin
 
         static void Postfix(HudManager __instance)
         {
-            if (IsCultistOn)
+            if (IsCultistUsed)
             {
                 if (AmongUsClient.Instance.GameState == InnerNetClient.GameStates.Started)
                 {
@@ -19,7 +21,7 @@ namespace CultistPlugin
                     {
                         KillButtonPatch.Prefix();
                     }
-                    
+
                     ClearCultistTasks();
 
                     lastQ = Input.GetKeyUp(KeyCode.Q);
@@ -27,7 +29,7 @@ namespace CultistPlugin
                     PlayerTools.closestPlayer = PlayerTools.getClosestPlayer(PlayerControl.LocalPlayer);
                     DistLocalClosest =
                         PlayerTools.getDistBetweenPlayers(PlayerControl.LocalPlayer, PlayerTools.closestPlayer);
-                    if (CultistSettings.InitialCultist.PlayerId == PlayerControl.LocalPlayer.PlayerId &&
+                    if (InitialCultist.PlayerId == PlayerControl.LocalPlayer.PlayerId &&
                         __instance.UseButton.isActiveAndEnabled)
                     {
                         KillButton.gameObject.SetActive(true);
@@ -50,6 +52,15 @@ namespace CultistPlugin
                     }
                 }
             }
+        }
+    }
+
+    [HarmonyPatch(typeof(GameOptionsData), nameof(GameOptionsData.Method_24))]
+    class GameOptionsScalePatch
+    {
+        static void Postfix(ref string __result)
+        {
+            DestroyableSingleton<HudManager>.Instance.GameSettings.scale = 0.66f;
         }
     }
 }

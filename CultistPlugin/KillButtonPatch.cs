@@ -13,7 +13,7 @@ namespace CultistPlugin
     {
         public static void Postfix()
         {
-            if (CultistSettings.InitialCultist != null)
+            if (GameSettings.IsCultistUsed)
             {
                 if (CheckCultistWin())
                 {
@@ -29,11 +29,11 @@ namespace CultistPlugin
                 return false;
             }
 
-            if (CurrentTarget != null && CultistSettings.InitialCultist != null)
+            if (GameSettings.IsCultistUsed && CurrentTarget != null)
             {
                 PlayerControl target = CurrentTarget;
 
-                if (PlayerControl.LocalPlayer == CultistSettings.InitialCultist)
+                if (PlayerControl.LocalPlayer == GameSettings.InitialCultist)
                 {
                     CLog.Info("CULTIST TRYING TO CONVERT!");
                     CLog.Info("Target is Impostor:" + target.Data.IsImpostor);
@@ -41,20 +41,31 @@ namespace CultistPlugin
 
                     if (!target.Data.IsImpostor && !IsCultist(target.PlayerId))
                     {
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(
-                            PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.ConvertAction, Hazel.SendOption.None, -1);
-                        writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                        writer.Write(target.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        AddCultistToLists(target);
-                        
-                        return false;
+                        if (ConversionsLeft > 0)
+                        {
+                            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(
+                                PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.ConvertAction, Hazel.SendOption.None,
+                                -1);
+                            writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                            writer.Write(target.PlayerId);
+                            AmongUsClient.Instance.FinishRpcImmediately(writer);
+                            AddCultistToLists(target);
+                            ConversionsLeft--;
+
+                        }
+                      
                     }
+
+                    if (target.Data.IsImpostor && GameSettings.ImpostorConversionAttemptUsesConversion)
+                    {
+                        ConversionsLeft--;
+                    }
+                    
+                    return false;
                 }
             }
 
             return true;
         }
     }
-
 }

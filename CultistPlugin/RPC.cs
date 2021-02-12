@@ -2,6 +2,7 @@
 using HarmonyLib;
 using Hazel;
 using static CultistPlugin.CultistMod;
+using static CultistPlugin.GameSettings;
 
 namespace CultistPlugin
 {
@@ -74,10 +75,13 @@ namespace CultistPlugin
                     {
                         if (player.PlayerId == CultistId)
                         {
-                            CultistSettings.InitialCultist = player;
+                            InitialCultist = player;
                             AddCultistToLists(player);
                         }
                     }
+                    CLog.Info("Setting Cultist Settings");
+                    SetCultistSettings();
+                    ConversionsLeft = MaxCultistConversions;
 
                     break;
                 case ((byte) CustomRPC.ConvertAction):

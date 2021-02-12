@@ -4,6 +4,7 @@ using HarmonyLib;
 using Hazel;
 using UnhollowerBaseLib;
 using static CultistPlugin.CultistMod;
+using static CultistPlugin.GameSettings;
 
 namespace CultistPlugin
 {
@@ -21,9 +22,9 @@ namespace CultistPlugin
                 DidCultistsWin = false;
                 CLog.Info("Cultist is on for this game.");
                 int cultistRandomId = new System.Random().Next(0, crewmates.Count);
-                CultistSettings.InitialCultist = crewmates[cultistRandomId];
+                InitialCultist = crewmates[cultistRandomId];
                 crewmates.RemoveAt(cultistRandomId);
-                byte CultistId = CultistSettings.InitialCultist.PlayerId;
+                byte CultistId = InitialCultist.PlayerId;
 
                 MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
                     (byte) CustomRPC.SetCultist, Hazel.SendOption.None, -1);
@@ -31,6 +32,8 @@ namespace CultistPlugin
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
 
                 AddCultistToLists(CultistId);
+                SetCultistSettings();
+                ConversionsLeft = MaxCultistConversions;
             }
         }
     }

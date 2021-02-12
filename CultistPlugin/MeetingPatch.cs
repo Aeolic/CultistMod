@@ -9,6 +9,7 @@ using Reactor.Extensions;
 using UnhollowerBaseLib;
 using UnhollowerBaseLib.Attributes;
 using UnityEngine;
+using static CultistPlugin.GameSettings;
 using static CultistPlugin.CultistMod;
 
 namespace CultistPlugin
@@ -58,7 +59,7 @@ namespace CultistPlugin
     {
         static void Postfix(MeetingHud __instance)
         {
-            if (IsCultistOn)
+            if (IsCultistUsed)
             {
                 CLog.Info("In Postfix Meeting");
                 if (AmongUsClient.Instance.AmHost)

@@ -10,7 +10,7 @@ namespace CultistPlugin
         {
             if (IsCultist(IIEKJBMPELC.PlayerId))
             {
-                __result = __result * CultistSettings.CultistVisionModifier;
+                __result = __result * GameSettings.CultistVisionModifier;
             }
         }
     }

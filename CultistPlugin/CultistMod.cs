@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using HarmonyLib;
+using Reactor;
 using Reactor.Extensions;
 using Reactor.Unstrip;
 using UnityEngine;
+using StringBuilder = Il2CppSystem.Text.StringBuilder;
 
 namespace CultistPlugin
 {
@@ -28,14 +30,11 @@ namespace CultistPlugin
         public static bool IsLastMurderFromCultistWin = false;
         public static int ImpostorDummyCount = 0;
         public static bool DisableGameEndDuringMeeting = false;
+        public static int ConversionsLeft;
 
         public static bool
             CrewmatesWinWhenImpostorsDead =
                 true; //TODO implement this - obv cult wins if cult > non cult (e.g. 6 players, 1 imp, 3 cult 2 crew, imp gets voted)
-
-        public static bool ImpostorConversionTryUsesConversion = true;
-
-        public static bool IsCultistOn = true; //TODO change to setting
 
         public static bool IsCultist(byte playerId)
         {
@@ -130,23 +129,64 @@ namespace CultistPlugin
             }
         }
 
+        // TODO try to get this to work instead of patching AppendTaskText
+        // [RegisterInIl2Cpp]
+        // public class CultTask : ImportantTextTask
+        // {
+        //     public CultTask(IntPtr ptr) : base(ptr)
+        //     {
+        //         CLog.Info("Creating CultTask");
+        //     }
+        // }
+
         public static void ClearCultistTasks() //TODO this works, but some error is thrown
         {
-            foreach (var playerInfo in PlayerControl.AllPlayerControls)
+            foreach (var player in PlayerControl.AllPlayerControls)
             {
-                if (IsCultist(playerInfo.PlayerId))
+                if (IsCultist(player.PlayerId))
                 {
                     var removeTask = new List<PlayerTask>();
-                    foreach (PlayerTask task in playerInfo.myTasks)
+                    foreach (PlayerTask task in player.myTasks)
                         if (task.TaskType != TaskTypes.FixComms && task.TaskType != TaskTypes.FixLights &&
                             task.TaskType != TaskTypes.ResetReactor && task.TaskType != TaskTypes.ResetSeismic &&
                             task.TaskType != TaskTypes.RestoreOxy)
                             removeTask.Add(task);
                     foreach (PlayerTask task in removeTask)
                     {
-                        playerInfo.RemoveTask(task);
+                        player.RemoveTask(task);
                     }
+
+                    ImportantTextTask convertedTask = new GameObject("textTask").AddComponent<ImportantTextTask>();
+                    convertedTask.transform.SetParent(player.transform, false);
+                    if (player.PlayerId != GameSettings.InitialCultist.PlayerId)
+                    {
+                        convertedTask.Text =
+                            "You got converted to the cult.\nHelp your cult leader convert other crewmates.";
+                    }
+                    else
+                    {
+                        convertedTask.Text =
+                            "You are the cult leader.\nConvert crewmates to join your cult.\nConversions left: " +
+                            ConversionsLeft + "/" + GameSettings.MaxCultistConversions;
+                    }
+
+                    player.myTasks.Insert(0, convertedTask);
                 }
+            }
+        }
+
+        [HarmonyPatch(typeof(ImportantTextTask), nameof(ImportantTextTask.AppendTaskText))]
+        public static class TaskPatch
+        {
+            public static bool Prefix(ImportantTextTask __instance, StringBuilder DOJIEDCICAJ)
+            {
+                if (IsCultist(PlayerControl.LocalPlayer.PlayerId))
+                {
+                    DOJIEDCICAJ.AppendLine("[6414C8FF]" + __instance.Text + "[]");
+                    return false;
+                }
+
+                return true;
             }
         }
     }
