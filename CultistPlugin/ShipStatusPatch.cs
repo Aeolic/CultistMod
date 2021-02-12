@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using static CultistPlugin.CultistMod;
+using static CultistPlugin.CultistSettings;
 
 namespace CultistPlugin
 {
@@ -10,7 +11,7 @@ namespace CultistPlugin
         {
             if (IsCultist(IIEKJBMPELC.PlayerId))
             {
-                __result = __result * GameSettings.CultistVisionModifier;
+                __result = __result * CultistVisionModifier;
             }
         }
     }

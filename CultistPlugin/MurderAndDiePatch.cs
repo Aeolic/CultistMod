@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using Hazel;
 using static CultistPlugin.CultistMod;
+using static CultistPlugin.CultistSettings;
 
 namespace CultistPlugin
 
@@ -10,7 +11,7 @@ namespace CultistPlugin
     {
         public static void Postfix(DeathReason OECOPGMHMKC)
         {
-            if (GameSettings.IsCultistUsed && !IsLastMurderFromCultistWin)
+            if (CultistSettings.IsCultistUsed && !IsLastMurderFromCultistWin)
             {
                 if (CheckCultistWin())
                 {
@@ -29,7 +30,7 @@ namespace CultistPlugin
     {
         public static bool Prefix(PlayerControl CAKODNGLPDF)
         {
-            if (!GameSettings.IsCultistUsed)
+            if (!IsCultistUsed)
             {
                 return true;
             }

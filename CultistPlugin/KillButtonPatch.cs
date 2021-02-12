@@ -5,6 +5,7 @@ using Reactor;
 using Reactor.Extensions;
 using UnityEngine;
 using static CultistPlugin.CultistMod;
+using static CultistPlugin.CultistSettings;
 
 namespace CultistPlugin
 {
@@ -13,7 +14,7 @@ namespace CultistPlugin
     {
         public static void Postfix()
         {
-            if (GameSettings.IsCultistUsed)
+            if (IsCultistUsed)
             {
                 if (CheckCultistWin())
                 {
@@ -29,12 +30,14 @@ namespace CultistPlugin
                 return false;
             }
 
-            if (GameSettings.IsCultistUsed && CurrentTarget != null)
+            if (IsCultistUsed && CurrentTarget != null)
             {
                 PlayerControl target = CurrentTarget;
 
-                if (PlayerControl.LocalPlayer == GameSettings.InitialCultist)
+                if (PlayerControl.LocalPlayer == InitialCultist)
                 {
+                    bool createNewTask = false;
+                    var player = PlayerControl.LocalPlayer;
                     CLog.Info("CULTIST TRYING TO CONVERT!");
                     CLog.Info("Target is Impostor:" + target.Data.IsImpostor);
                     CLog.Info("Target is Cultist:" + IsCultist(target.PlayerId));
@@ -51,18 +54,38 @@ namespace CultistPlugin
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
                             AddCultistToLists(target);
                             ConversionsLeft--;
+                            if (CheckCultistWin())
+                            {
+                                ExecuteCultistWin();
+                            }
 
+                            createNewTask = true;
                         }
-                      
                     }
 
-                    if (target.Data.IsImpostor && GameSettings.ImpostorConversionAttemptUsesConversion)
+                    if (target.Data.IsImpostor && ImpostorConversionAttemptUsesConversion)
                     {
                         ConversionsLeft--;
+                        createNewTask = true;
                     }
-                    
+
+                    if (createNewTask)
+                    {
+                        ImportantTextTask cultLeaderTask =
+                            new GameObject("CultistLeaderTask").AddComponent<ImportantTextTask>();
+                        cultLeaderTask.transform.SetParent(player.transform, false);
+
+                        cultLeaderTask.Text =
+                            "You are the cult leader.\nConvert crewmates to join your cult.\nConversions left:" +
+                            ConversionsLeft + "/" + MaxCultistConversions;
+                        player.myTasks.Clear();
+                        player.myTasks.Insert(0, cultLeaderTask);
+                    }
+
                     return false;
                 }
+
+                return true;
             }
 
             return true;

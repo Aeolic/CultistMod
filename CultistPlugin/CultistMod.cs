@@ -7,6 +7,7 @@ using Reactor.Extensions;
 using Reactor.Unstrip;
 using UnityEngine;
 using StringBuilder = Il2CppSystem.Text.StringBuilder;
+using static CultistPlugin.CultistSettings;
 
 namespace CultistPlugin
 {
@@ -53,18 +54,24 @@ namespace CultistPlugin
 
         public static void AddCultistToLists(PlayerControl playerControl)
         {
-            CultistList.Add(playerControl.PlayerId);
-            CultistNameList.Add(playerControl.Data.PlayerName);
+            if (!IsCultist(playerControl.PlayerId))
+            {
+                CultistList.Add(playerControl.PlayerId);
+                CultistNameList.Add(playerControl.Data.PlayerName);
+            }
         }
 
         public static void AddCultistToLists(byte playerId)
         {
-            CultistList.Add(playerId);
-            foreach (var player in PlayerControl.AllPlayerControls)
+            if (!IsCultist(playerId))
             {
-                if (player.PlayerId == playerId)
+                CultistList.Add(playerId);
+                foreach (var player in PlayerControl.AllPlayerControls)
                 {
-                    CultistNameList.Add(player.Data.PlayerName);
+                    if (player.PlayerId == playerId)
+                    {
+                        CultistNameList.Add(player.Data.PlayerName);
+                    }
                 }
             }
         }
@@ -78,6 +85,16 @@ namespace CultistPlugin
 
         public static bool CheckCultistWin()
         {
+            CLog.Info("CULTISTS IN LISTS:");
+
+            var x = "";
+            foreach (var name in CultistNameList)
+            {
+                x += name + " ";
+            }
+            CLog.Info(x);
+            
+            
             int alive = 0;
             int cultists = 0;
             foreach (PlayerControl player in PlayerControl.AllPlayerControls)
@@ -91,8 +108,6 @@ namespace CultistPlugin
                     }
                 }
             }
-
-            CLog.Info("Alive: " + alive + " Alive/2 " + (alive / 2) + " cultists: " + cultists);
 
             if (alive / 2 < cultists)
             {
@@ -138,39 +153,27 @@ namespace CultistPlugin
         //         CLog.Info("Creating CultTask");
         //     }
         // }
-
+        
         public static void ClearCultistTasks() //TODO this works, but some error is thrown
         {
-            foreach (var player in PlayerControl.AllPlayerControls)
+            foreach (PlayerControl player in PlayerControl.AllPlayerControls)
             {
+                if (player == null)
+                {
+                    return;
+                }
                 if (IsCultist(player.PlayerId))
                 {
-                    var removeTask = new List<PlayerTask>();
-                    foreach (PlayerTask task in player.myTasks)
-                        if (task.TaskType != TaskTypes.FixComms && task.TaskType != TaskTypes.FixLights &&
-                            task.TaskType != TaskTypes.ResetReactor && task.TaskType != TaskTypes.ResetSeismic &&
-                            task.TaskType != TaskTypes.RestoreOxy)
-                            removeTask.Add(task);
-                    foreach (PlayerTask task in removeTask)
-                    {
-                        player.RemoveTask(task);
-                    }
-
-                    ImportantTextTask convertedTask = new GameObject("textTask").AddComponent<ImportantTextTask>();
-                    convertedTask.transform.SetParent(player.transform, false);
-                    if (player.PlayerId != GameSettings.InitialCultist.PlayerId)
-                    {
-                        convertedTask.Text =
-                            "You got converted to the cult.\nHelp your cult leader convert other crewmates.";
-                    }
-                    else
-                    {
-                        convertedTask.Text =
-                            "You are the cult leader.\nConvert crewmates to join your cult.\nConversions left: " +
-                            ConversionsLeft + "/" + GameSettings.MaxCultistConversions;
-                    }
-
-                    player.myTasks.Insert(0, convertedTask);
+                    // var removeTask = new List<PlayerTask>();
+                    // foreach (PlayerTask task in player.myTasks)
+                    //     if (task.TaskType != TaskTypes.FixComms && task.TaskType != TaskTypes.FixLights &&
+                    //         task.TaskType != TaskTypes.ResetReactor && task.TaskType != TaskTypes.ResetSeismic &&
+                    //         task.TaskType != TaskTypes.RestoreOxy && task.name != "CultistTask" && task.name != "CultistLeaderTask")
+                    //         removeTask.Add(task);
+                    // foreach (PlayerTask task in removeTask)
+                    // {
+                    //     player.RemoveTask(task);
+                    // }
                 }
             }
         }

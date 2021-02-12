@@ -3,8 +3,9 @@ using System.Linq;
 using HarmonyLib;
 using Hazel;
 using UnhollowerBaseLib;
+using UnityEngine;
 using static CultistPlugin.CultistMod;
-using static CultistPlugin.GameSettings;
+using static CultistPlugin.CultistSettings;
 
 namespace CultistPlugin
 {
@@ -25,6 +26,7 @@ namespace CultistPlugin
                 InitialCultist = crewmates[cultistRandomId];
                 crewmates.RemoveAt(cultistRandomId);
                 byte CultistId = InitialCultist.PlayerId;
+                CLog.Info("Randomly chose cultist on host side: " + InitialCultist.name);
 
                 MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
                     (byte) CustomRPC.SetCultist, Hazel.SendOption.None, -1);
@@ -34,6 +36,19 @@ namespace CultistPlugin
                 AddCultistToLists(CultistId);
                 SetCultistSettings();
                 ConversionsLeft = MaxCultistConversions;
+
+                if (PlayerControl.LocalPlayer.PlayerId == cultistRandomId)
+                {
+                    ImportantTextTask cultistLeaderTask =
+                        new GameObject("CultistLeaderTask").AddComponent<ImportantTextTask>();
+                    cultistLeaderTask.transform.SetParent(PlayerControl.LocalPlayer.transform, false);
+
+                    cultistLeaderTask.Text =
+                        "You are the cult leader.\nConvert crewmates to join your cult.\nConversions left: " +
+                        ConversionsLeft + "/" + MaxCultistConversions;
+
+                    PlayerControl.LocalPlayer.myTasks.Insert(0, cultistLeaderTask);
+                }
             }
         }
     }

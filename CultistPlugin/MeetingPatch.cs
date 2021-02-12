@@ -9,7 +9,7 @@ using Reactor.Extensions;
 using UnhollowerBaseLib;
 using UnhollowerBaseLib.Attributes;
 using UnityEngine;
-using static CultistPlugin.GameSettings;
+using static CultistPlugin.CultistSettings;
 using static CultistPlugin.CultistMod;
 
 namespace CultistPlugin
@@ -61,6 +61,11 @@ namespace CultistPlugin
         {
             if (IsCultistUsed)
             {
+                if (DoCrewmatesWinWhenImpostorsAreDead)
+                {
+                    return;
+                }
+
                 CLog.Info("In Postfix Meeting");
                 if (AmongUsClient.Instance.AmHost)
                 {

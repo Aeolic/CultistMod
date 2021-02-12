@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using HarmonyLib;
 using Hazel;
+using UnityEngine;
 using static CultistPlugin.CultistMod;
-using static CultistPlugin.GameSettings;
+using static CultistPlugin.CultistSettings;
 
 namespace CultistPlugin
 {
@@ -77,11 +78,15 @@ namespace CultistPlugin
                         {
                             InitialCultist = player;
                             AddCultistToLists(player);
+                            CLog.Info("SET PLAYER TO CULTIST " + player.name);
                         }
                     }
+
                     CLog.Info("Setting Cultist Settings");
                     SetCultistSettings();
                     ConversionsLeft = MaxCultistConversions;
+
+                    CLog.Info("Cultist list after cultist set through RPC:");
 
                     break;
                 case ((byte) CustomRPC.ConvertAction):
@@ -95,6 +100,25 @@ namespace CultistPlugin
                         {
                             CLog.Info(player.Data.PlayerName + "is now a cultist.");
                             AddCultistToLists(player);
+
+                            for (int i = 0; i < player.myTasks.Count; i++)
+                            {
+                                PlayerTask playerTask = player.myTasks[i];
+                                playerTask.OnRemove();
+                                Object.Destroy(playerTask.gameObject);
+                            }
+
+                            player.myTasks.Clear();
+
+                            ImportantTextTask convertedTask =
+                                new GameObject("CultistTask").AddComponent<ImportantTextTask>();
+                            convertedTask.transform.SetParent(player.transform, false);
+
+                            convertedTask.Text =
+                                "You got converted to the cult.\nHelp your cult leader convert other crewmates.";
+
+
+                            player.myTasks.Insert(0, convertedTask);
                         }
                     }
 

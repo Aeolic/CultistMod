@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using UnityEngine;
 using static CultistPlugin.CultistMod;
-using static CultistPlugin.GameSettings;
+using static CultistPlugin.CultistSettings;
 
 
 namespace CultistPlugin
@@ -21,15 +21,14 @@ namespace CultistPlugin
                     {
                         KillButtonPatch.Prefix();
                     }
-
-                    ClearCultistTasks();
-
+                    
                     lastQ = Input.GetKeyUp(KeyCode.Q);
                     KillButton = __instance.KillButton;
                     PlayerTools.closestPlayer = PlayerTools.getClosestPlayer(PlayerControl.LocalPlayer);
                     DistLocalClosest =
                         PlayerTools.getDistBetweenPlayers(PlayerControl.LocalPlayer, PlayerTools.closestPlayer);
-                    if (InitialCultist.PlayerId == PlayerControl.LocalPlayer.PlayerId &&
+                    
+                    if ( InitialCultist.PlayerId == PlayerControl.LocalPlayer.PlayerId &&
                         __instance.UseButton.isActiveAndEnabled)
                     {
                         KillButton.gameObject.SetActive(true);
@@ -50,6 +49,9 @@ namespace CultistPlugin
                             CurrentTarget = null;
                         }
                     }
+
+                    //ClearCultistTasks();
+
                 }
             }
         }

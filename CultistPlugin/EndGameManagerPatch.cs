@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using HarmonyLib;
 using static CultistPlugin.CultistMod;
+using static CultistPlugin.CultistSettings;
 
 namespace CultistPlugin
 {
@@ -64,6 +65,8 @@ namespace CultistPlugin
                     __instance.WinText.Text = "Defeat: You did not convert enough members.";
                 }
             }
+
+            InitialCultist = null;
         }
     }
 }
