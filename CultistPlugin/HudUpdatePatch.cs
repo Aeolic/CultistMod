@@ -1,8 +1,8 @@
 ﻿using HarmonyLib;
 using UnityEngine;
-using static ExamplePlugin.CultistMod;
+using static CultistPlugin.CultistMod;
 
-namespace ExamplePlugin
+namespace CultistPlugin
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public class HudUpdatePatch

@@ -3,9 +3,9 @@ using System.Linq;
 using HarmonyLib;
 using Hazel;
 using UnhollowerBaseLib;
-using static ExamplePlugin.CultistMod;
+using static CultistPlugin.CultistMod;
 
-namespace ExamplePlugin
+namespace CultistPlugin
 {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.RpcSetInfected))]
     public class SetInfectedPatch
@@ -17,7 +17,7 @@ namespace ExamplePlugin
 
             if (CultistPlugin.UseCultist.GetValue())
             {
-                CultistList.Clear();
+                ClearCultistLists();
                 DidCultistsWin = false;
                 CLog.Info("Cultist is on for this game.");
                 int cultistRandomId = new System.Random().Next(0, crewmates.Count);
@@ -30,7 +30,7 @@ namespace ExamplePlugin
                 writer.Write(CultistId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
 
-                CultistList.Add(CultistId);
+                AddCultistToLists(CultistId);
             }
         }
     }

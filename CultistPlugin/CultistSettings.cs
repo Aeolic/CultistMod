@@ -1,4 +1,4 @@
-﻿namespace ExamplePlugin
+﻿namespace CultistPlugin
 {
     public static class CultistSettings
     {

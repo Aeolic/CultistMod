@@ -23,7 +23,7 @@ using System.Runtime.InteropServices;
 using System.IO;
 using Reactor;
 
-namespace ExamplePlugin
+namespace CultistPlugin
 {
     [HarmonyPatch]
     public static class PlayerTools

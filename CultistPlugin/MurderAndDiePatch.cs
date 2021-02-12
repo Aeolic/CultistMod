@@ -1,8 +1,8 @@
 ﻿using HarmonyLib;
 using Hazel;
-using static ExamplePlugin.CultistMod;
+using static CultistPlugin.CultistMod;
 
-namespace ExamplePlugin
+namespace CultistPlugin
 
 {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.Die))]

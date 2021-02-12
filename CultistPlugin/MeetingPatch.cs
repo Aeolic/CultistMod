@@ -9,9 +9,9 @@ using Reactor.Extensions;
 using UnhollowerBaseLib;
 using UnhollowerBaseLib.Attributes;
 using UnityEngine;
-using static ExamplePlugin.CultistMod;
+using static CultistPlugin.CultistMod;
 
-namespace ExamplePlugin
+namespace CultistPlugin
 {
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Awake))]
     public class MeetingAwakePatch
@@ -78,7 +78,7 @@ namespace ExamplePlugin
                                 {
                                     amntAliveImpostors++;
                                 }
-                                else if (isCultist(player.PlayerId))
+                                else if (IsCultist(player.PlayerId))
                                 {
                                     amntAliveCultists++;
                                 }
@@ -94,7 +94,7 @@ namespace ExamplePlugin
                         }
 
                         // if the last Cultist is kicked, we dont need an dummy
-                        if (amntAliveCultists <= 1 && isCultist(__instance.exiledPlayer.PlayerId))
+                        if (amntAliveCultists <= 1 && IsCultist(__instance.exiledPlayer.PlayerId))
                         {
                             shouldCreateDummy = false;
                         }

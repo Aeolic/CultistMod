@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using HarmonyLib;
 using Hazel;
-using static ExamplePlugin.CultistMod;
+using static CultistPlugin.CultistMod;
 
-namespace ExamplePlugin
+namespace CultistPlugin
 {
     enum RPC
     {
@@ -67,7 +67,7 @@ namespace ExamplePlugin
             {
                 case ((byte) CustomRPC.SetCultist):
                     CLog.Info("Cultist Set Through RPC!");
-                    CultistList.Clear();
+                    ClearCultistLists();
                     DidCultistsWin = false;
                     byte CultistId = ALMCIJKELCP.ReadByte();
                     foreach (PlayerControl player in PlayerControl.AllPlayerControls)
@@ -75,11 +75,9 @@ namespace ExamplePlugin
                         if (player.PlayerId == CultistId)
                         {
                             CultistSettings.InitialCultist = player;
-                            CultistList.Add(CultistId);
+                            AddCultistToLists(player);
                         }
                     }
-
-                    CLog.Info("AMOUNT CULTIST AFTER SET CULTIST (SHOULD ALWAYS BE 1): " + CultistList.Count);
 
                     break;
                 case ((byte) CustomRPC.ConvertAction):
@@ -89,10 +87,10 @@ namespace ExamplePlugin
 
                     foreach (PlayerControl player in PlayerControl.AllPlayerControls)
                     {
-                        if (player.PlayerId == TargetId && !isCultist(player.PlayerId))
+                        if (player.PlayerId == TargetId && !IsCultist(player.PlayerId))
                         {
                             CLog.Info(player.Data.PlayerName + "is now a cultist.");
-                            CultistList.Add(TargetId);
+                            AddCultistToLists(player);
                         }
                     }
 
@@ -112,6 +110,7 @@ namespace ExamplePlugin
                             GameData.Instance.RemovePlayer(player.PlayerId);
                         }
                     }
+
                     break;
             }
         }

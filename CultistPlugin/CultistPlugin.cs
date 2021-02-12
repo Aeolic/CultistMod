@@ -14,14 +14,14 @@ using System.Linq;
 using Reactor.Extensions;
 
 
-namespace ExamplePlugin
+namespace CultistPlugin
 {
     [BepInPlugin(Id)]
     [BepInProcess("Among Us.exe")]
     [BepInDependency(ReactorPlugin.Id)]
     public class CultistPlugin : BasePlugin
     {
-        public const string Id = "JubezTestMod";
+        public const string Id = "gg.reactor.cultistmod";
 
         public Harmony Harmony { get; } = new Harmony(Id);
 

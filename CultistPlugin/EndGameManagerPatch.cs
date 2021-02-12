@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using HarmonyLib;
-using static ExamplePlugin.CultistMod;
+using static CultistPlugin.CultistMod;
 
-namespace ExamplePlugin
+namespace CultistPlugin
 {
     [HarmonyPatch(typeof(EndGameManager), "SetEverythingUp")]
     public class EndGameManagerPatch
@@ -12,19 +12,16 @@ namespace ExamplePlugin
             if (TempData.DidHumansWin(TempData.EndReason))
             {
                 var toRemove = new List<WinningPlayerData>();
-                
+
                 foreach (var winner in TempData.winners)
                 {
                     CLog.Info("WINNER:" + winner.Name);
-                    foreach (var player in PlayerControl.AllPlayerControls)
+
+                    CLog.Info("Checking if " + winner.Name + "is Cultist.");
+                    if (IsCultist(winner.Name))
                     {
-                        if (winner.Name == player.name)
-                        {
-                            if (isCultist(player.PlayerId))
-                            {
-                                toRemove.Add(winner);
-                            }
-                        }
+                        CLog.Info("Adding " + winner.Name + "to remove list.");
+                        toRemove.Add(winner);
                     }
                 }
 
@@ -38,7 +35,6 @@ namespace ExamplePlugin
                 {
                     CLog.Info("WINNER AFTER REMOVE:" + winner.Name);
                 }
-
             }
         }
 
@@ -46,11 +42,11 @@ namespace ExamplePlugin
         {
             if (DidCultistsWin)
             {
-                __instance.WinText.Color = ModdedPalette.CultistColor;
-                __instance.BackgroundBar.material.color = ModdedPalette.CultistColor;
+                __instance.WinText.Color = CultistMod.ModdedPalette.CultistColor;
+                __instance.BackgroundBar.material.color = CultistMod.ModdedPalette.CultistColor;
 
 
-                if (isCultist(PlayerControl.LocalPlayer.PlayerId))
+                if (IsCultist(PlayerControl.LocalPlayer.PlayerId))
                 {
                     __instance.WinText.Text = "Victory: The Cult";
                 }
@@ -61,10 +57,10 @@ namespace ExamplePlugin
             }
             else if (TempData.DidHumansWin(TempData.EndReason))
             {
-                if (isCultist(PlayerControl.LocalPlayer.PlayerId))
+                if (IsCultist(PlayerControl.LocalPlayer.PlayerId))
                 {
                     __instance.WinText.Color = Palette.ImpostorRed;
-                    __instance.BackgroundBar.material.color = ModdedPalette.CultistColor;
+                    __instance.BackgroundBar.material.color = CultistMod.ModdedPalette.CultistColor;
                     __instance.WinText.Text = "Defeat: You did not convert enough members.";
                 }
             }

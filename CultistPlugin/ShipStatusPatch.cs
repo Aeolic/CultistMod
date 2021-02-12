@@ -1,14 +1,14 @@
 ﻿using HarmonyLib;
-using static ExamplePlugin.CultistMod;
+using static CultistPlugin.CultistMod;
 
-namespace ExamplePlugin
+namespace CultistPlugin
 {
     [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.CalculateLightRadius))]
     public class ShipStatusPatch
     {
         public static void Postfix(ref float __result, GameData.PlayerInfo IIEKJBMPELC)
         {
-            if (isCultist(IIEKJBMPELC.PlayerId))
+            if (IsCultist(IIEKJBMPELC.PlayerId))
             {
                 __result = __result * CultistSettings.CultistVisionModifier;
             }

@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using HarmonyLib;
 using Reactor.Extensions;
 using Reactor.Unstrip;
 using UnityEngine;
 
-namespace ExamplePlugin
+namespace CultistPlugin
 {
     [HarmonyPatch]
     public static class CultistMod
@@ -20,24 +21,61 @@ namespace ExamplePlugin
 
         public static List<byte> CultistList = new List<byte>();
 
+        public static List<String>
+            CultistNameList = new List<String>(); //necessary, because for win condition checks the Ids are unknown
+
         public static bool DidCultistsWin = false;
         public static bool IsLastMurderFromCultistWin = false;
         public static int ImpostorDummyCount = 0;
         public static bool DisableGameEndDuringMeeting = false;
-        public static bool CrewmatesWinWhenImpostorsDead = true; //TODO implement this - obv cult wins if cult > non cult (e.g. 6 players, 1 imp, 3 cult 2 crew, imp gets voted)
+
+        public static bool
+            CrewmatesWinWhenImpostorsDead =
+                true; //TODO implement this - obv cult wins if cult > non cult (e.g. 6 players, 1 imp, 3 cult 2 crew, imp gets voted)
+
         public static bool ImpostorConversionTryUsesConversion = true;
 
         public static bool IsCultistOn = true; //TODO change to setting
 
-        public static bool isCultist(byte PlayerId)
+        public static bool IsCultist(byte playerId)
         {
-            return CultistList.IndexOf(PlayerId) != -1;
+            return CultistList.IndexOf(playerId) != -1;
+        }
+
+        public static bool IsCultist(String playerName)
+        {
+            return CultistNameList.IndexOf(playerName) != -1;
         }
 
         public static class ModdedPalette
         {
             public static Color CultistColor = new Color(100f / 255f, 20f / 255f, 200f / 255f, 1);
         }
+
+        public static void AddCultistToLists(PlayerControl playerControl)
+        {
+            CultistList.Add(playerControl.PlayerId);
+            CultistNameList.Add(playerControl.Data.PlayerName);
+        }
+
+        public static void AddCultistToLists(byte playerId)
+        {
+            CultistList.Add(playerId);
+            foreach (var player in PlayerControl.AllPlayerControls)
+            {
+                if (player.PlayerId == playerId)
+                {
+                    CultistNameList.Add(player.Data.PlayerName);
+                }
+            }
+        }
+
+        public static void ClearCultistLists()
+        {
+            CultistList.Clear();
+            CultistNameList.Clear();
+        }
+
 
         public static bool CheckCultistWin()
         {
@@ -48,7 +86,7 @@ namespace ExamplePlugin
                 if (!player.Data.IsDead)
                 {
                     alive++;
-                    if (isCultist(player.PlayerId))
+                    if (IsCultist(player.PlayerId))
                     {
                         cultists++;
                     }
@@ -72,7 +110,7 @@ namespace ExamplePlugin
             foreach (PlayerControl player in PlayerControl.AllPlayerControls)
             {
                 // for each player check if cultist, if not kill
-                if (!isCultist(player.PlayerId))
+                if (!IsCultist(player.PlayerId))
                 {
                     if (!player.Data.IsDead)
                     {
@@ -92,11 +130,11 @@ namespace ExamplePlugin
             }
         }
 
-        public static void ClearCultistTasks()
+        public static void ClearCultistTasks() //TODO this works, but some error is thrown
         {
             foreach (var playerInfo in PlayerControl.AllPlayerControls)
             {
-                if (isCultist(playerInfo.PlayerId))
+                if (IsCultist(playerInfo.PlayerId))
                 {
                     var removeTask = new List<PlayerTask>();
                     foreach (PlayerTask task in playerInfo.myTasks)
