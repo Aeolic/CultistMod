@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using HarmonyLib;
+using Hazel;
 using Reactor.Extensions;
 using Reactor.Unstrip;
 using UnityEngine;
@@ -25,10 +26,12 @@ namespace CultistPlugin
         public static List<String> CultistNameList = new List<String>();
 
         public static bool DidCultistsWin = false;
+
         public static bool IsLastMurderFromCultistWin = false;
+
         //TODO swap dummy count for bool "hasDummy"
         public static int ImpostorDummyCount = 0;
-        public static bool DisableGameEndDuringMeeting = false;
+        public static bool DisableGameEnd = false;
         public static int ConversionsLeft { get; set; }
         public static DateTime? LastConversion { get; set; }
 
@@ -42,11 +45,9 @@ namespace CultistPlugin
             return CultistNameList.IndexOf(playerName) != -1;
         }
 
-        public static class ModdedPalette
-        {
-            public static Color CultistColor = new Color(100f / 255f, 20f / 255f, 200f / 255f, 1);
-        }
-
+      
+        public static Color CultistColor = new Color(100f / 255f, 20f / 255f, 200f / 255f, 1);
+        
         public static void AddCultistToLists(PlayerControl playerControl)
         {
             if (!IsCultist(playerControl.PlayerId))
@@ -94,6 +95,11 @@ namespace CultistPlugin
                 }
             }
 
+            if (ImpostorDummyCount > 0)
+            {
+                alive--;
+            }
+
             if (alive / 2 < cultists)
             {
                 CLog.Info("-----CULTIST WIN-----");
@@ -106,6 +112,14 @@ namespace CultistPlugin
         public static void ExecuteCultistWin()
         {
             DidCultistsWin = true;
+
+            DisableGameEnd = true;
+
+            if (ImpostorDummyCount > 0)
+            {
+                KillDummy();
+            }
+
             foreach (PlayerControl player in PlayerControl.AllPlayerControls)
             {
                 // for each player check if cultist, if not kill
@@ -121,10 +135,38 @@ namespace CultistPlugin
                     player.RemoveInfected();
                     player.Data.IsImpostor = false;
                 }
-                //
                 else
                 {
                     player.Data.IsImpostor = true;
+                }
+            }
+
+            DisableGameEnd = false;
+        }
+
+        public static void KillDummy()
+        {
+            CLog.Info("Trying to Kill a Dummy.");
+            PlayerControl playerToRemove = null;
+            foreach (var player in PlayerControl.AllPlayerControls)
+            {
+                if (player.name == "IMPOSTOR_DUMMY")
+                {
+                    playerToRemove = player;
+                }
+            }
+
+            if (playerToRemove != null)
+            {
+                CLog.Info("Killing dummy after receiving RPC command.");
+                GameData.Instance.RemovePlayer(playerToRemove.PlayerId);
+                PlayerControl.AllPlayerControls.Remove(playerToRemove);
+
+                if (AmongUsClient.Instance.AmHost)
+                {
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(
+                        PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.KillDummy, Hazel.SendOption.None, -1);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
             }
         }

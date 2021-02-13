@@ -16,6 +16,12 @@ namespace CultistPlugin
 
         public Harmony Harmony { get; } = new Harmony(Id);
 
+        //I am using Reactor Essentials by DorCoMaNdO for these settings
+        // https://github.com/DorCoMaNdO/Reactor-Essentials
+        // I'm using a Essentials version without the watermark
+        // but I am giving credit here and in the Credits Tab in the readme
+        // If there is any Problem with this, hit me up on Discord @ Aeolic#5560
+
         public static CustomToggleOption UseCultist = CustomOption.AddToggle("Play with Cultist", true);
 
         public static CustomToggleOption CrewWinsWhenImpDead =

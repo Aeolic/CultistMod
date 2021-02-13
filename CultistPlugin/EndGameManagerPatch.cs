@@ -10,6 +10,7 @@ namespace CultistPlugin
     {
         public static void Prefix(EndGameManager __instance)
         {
+            
             if (TempData.DidHumansWin(TempData.EndReason))
             {
                 var toRemove = new List<WinningPlayerData>();
@@ -43,8 +44,10 @@ namespace CultistPlugin
         {
             if (DidCultistsWin)
             {
-                __instance.WinText.Color = CultistMod.ModdedPalette.CultistColor;
-                __instance.BackgroundBar.material.color = CultistMod.ModdedPalette.CultistColor;
+                __instance.WinText.Color = CultistColor;
+                __instance.BackgroundBar.material.color = CultistColor;
+                
+                //TODO make color purple!
 
 
                 if (IsCultist(PlayerControl.LocalPlayer.PlayerId))
@@ -61,7 +64,7 @@ namespace CultistPlugin
                 if (IsCultist(PlayerControl.LocalPlayer.PlayerId))
                 {
                     __instance.WinText.Color = Palette.ImpostorRed;
-                    __instance.BackgroundBar.material.color = CultistMod.ModdedPalette.CultistColor;
+                    __instance.BackgroundBar.material.color = CultistColor;
                     __instance.WinText.Text = "Defeat: You did not convert enough members.";
                 }
             }

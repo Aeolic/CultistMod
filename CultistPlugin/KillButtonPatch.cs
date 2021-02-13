@@ -32,7 +32,7 @@ namespace CultistPlugin
             {
                 PlayerControl target = CurrentTarget;
 
-                if (PlayerControl.LocalPlayer == InitialCultist)
+                if (PlayerControl.LocalPlayer == InitialCultist && PlayerTools.GetConversionCooldown() == 0)
                 {
                     bool createNewTask = false;
                     var player = PlayerControl.LocalPlayer;
@@ -63,11 +63,14 @@ namespace CultistPlugin
                         }
                     }
 
-                    if (target.Data.IsImpostor && ImpostorConversionAttemptUsesConversion)
+                    if (target.Data.IsImpostor)
                     {
-                        ConversionsLeft--;
-                        createNewTask = true;
                         LastConversion = DateTime.UtcNow;
+                        if (ImpostorConversionAttemptUsesConversion)
+                        {
+                            ConversionsLeft--;
+                            createNewTask = true;
+                        }
                     }
 
                     if (createNewTask)

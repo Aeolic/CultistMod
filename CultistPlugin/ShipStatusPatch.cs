@@ -21,7 +21,7 @@ namespace CultistPlugin
     {
         public static bool Prefix()
         {
-            if (DisableGameEndDuringMeeting)
+            if (DisableGameEnd)
             {
                 return false;
             }

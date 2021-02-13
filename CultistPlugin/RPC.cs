@@ -128,13 +128,26 @@ namespace CultistPlugin
 
                     break;
                 case ((byte) CustomRPC.KillDummy):
+                    PlayerControl playerToRemove = null;
                     foreach (var player in PlayerControl.AllPlayerControls)
                     {
                         if (player.name == "IMPOSTOR_DUMMY")
                         {
-                            CLog.Info("Killing dummy after receiving RPC command.");
-                            GameData.Instance.RemovePlayer(player.PlayerId);
+                            playerToRemove = player;
                         }
+                    }
+
+                    if (playerToRemove != null)
+                    {
+                        CLog.Info("Killing dummy after receiving RPC command.");
+                        GameData.Instance.RemovePlayer(playerToRemove.PlayerId);
+                        PlayerControl.AllPlayerControls.Remove(playerToRemove);
+
+                        if (CheckCultistWin())
+                        {
+                            ExecuteCultistWin();
+                        }
+                        
                     }
 
                     break;

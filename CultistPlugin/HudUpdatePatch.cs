@@ -33,7 +33,8 @@ namespace CultistPlugin
                     {
                         KillButton.gameObject.SetActive(true);
                         KillButton.isActive = true;
-                        KillButton.SetCoolDown(PlayerTools.GetConversionCooldown(), PlayerControl.GameOptions.KillCooldown + 15.0f);
+                        KillButton.SetCoolDown(PlayerTools.GetConversionCooldown(),
+                            PlayerControl.GameOptions.KillCooldown + 15.0f);
                         KillButton.renderer.sprite = convertIcon;
                         KillButton.renderer.color = Palette.EnabledColor;
                         KillButton.renderer.material.SetFloat("_Desat", 0f);
@@ -47,6 +48,35 @@ namespace CultistPlugin
                         {
                             KillButton.SetTarget(null);
                             CurrentTarget = null;
+                        }
+                    }
+
+                    if (IsCultist(PlayerControl.LocalPlayer.PlayerId))
+                    {
+                        PlayerControl.LocalPlayer.nameText.Color = CultistColor;
+                        var isLocalCultLeader = PlayerControl.LocalPlayer.PlayerId == InitialCultist.PlayerId;
+
+                        foreach (var player in PlayerControl.AllPlayerControls)
+                        {
+                            if (((CultistsKnowEachOther || isLocalCultLeader) && IsCultist(player.PlayerId)) ||
+                                player.PlayerId == InitialCultist.PlayerId)
+                            {
+                                player.nameText.Color = CultistColor;
+                            }
+                        }
+
+                        if (MeetingHud.Instance != null)
+                        {
+                            foreach (PlayerVoteArea player in MeetingHud.Instance.playerStates)
+                            {
+                                if ((player.TargetPlayerId == PlayerControl.LocalPlayer.PlayerId) ||
+                                    (player.NameText != null && InitialCultist.PlayerId == player.TargetPlayerId) ||
+                                    ((CultistsKnowEachOther || isLocalCultLeader) &&
+                                     IsCultist((byte) player.TargetPlayerId)))
+                                {
+                                    player.NameText.Color = CultistColor;
+                                }
+                            }
                         }
                     }
                 }

@@ -18,25 +18,11 @@ namespace CultistPlugin
             CLog.Info("ImpostorDummyCount: " + ImpostorDummyCount);
             if (ImpostorDummyCount > 0)
             {
-                CLog.Info("Found a Dummy.");
-                foreach (var player in PlayerControl.AllPlayerControls)
-                {
-                    CLog.Info(player.name + " is Impostor: " + player.Data.IsImpostor);
-
-                    if (player.name == "IMPOSTOR_DUMMY")
-                    {
-                        CLog.Info("Killing the dummy!");
-                        DisableGameEndDuringMeeting = true;
-                        //player.Die(DeathReason.Disconnect);
-                        GameData.Instance.RemovePlayer(player.PlayerId);
-
-                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(
-                            PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.KillDummy, Hazel.SendOption.None, -1);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    }
-                }
+                KillDummy();
             }
         }
+
+       
     }
 
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.HandleProceed))]
@@ -101,12 +87,12 @@ namespace CultistPlugin
                         CLog.Info("Creating Dummy Impostor");
                         ImpostorDummyCount++;
                         var gameObject = new GameObject(nameof(ImpostorDummy)).DontDestroy();
-                        gameObject.AddComponent<ImpostorDummy>();
+                        var dummy =gameObject.AddComponent<ImpostorDummy>();
                     }
                 }
 
                 CLog.Info("End of postfix!");
-                DisableGameEndDuringMeeting = false;
+                DisableGameEnd = false;
             }
         }
     }
@@ -130,14 +116,13 @@ namespace CultistPlugin
             var i = playerControl.PlayerId = (byte) GameData.Instance.GetAvailableId();
             GameData.Instance.AddPlayer(playerControl);
             AmongUsClient.Instance.Spawn(playerControl, -2, SpawnFlags.None);
-            playerControl.transform.position = PlayerControl.LocalPlayer.transform.position;
+            playerControl.transform.position = PlayerControl.LocalPlayer.transform.position; //TODO maybe spawn outside?
             playerControl.GetComponent<DummyBehaviour>().enabled = true;
-            playerControl.GetComponent<DummyBehaviour>().GetComponent<Renderer>().enabled = false;
             playerControl.NetTransform.enabled = false;
             playerControl.SetName("IMPOSTOR_DUMMY");
             playerControl.SetColor((byte) (i % Palette.PlayerColors.Length));
             playerControl.Data.IsImpostor = true;
-            //playerControl.GetComponent<SpriteRenderer>().enabled = false;
+            playerControl.GetComponent<DummyBehaviour>().transform.localScale = new Vector3(0, 0, 0);
         }
     }
 }
