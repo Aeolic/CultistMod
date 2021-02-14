@@ -9,6 +9,18 @@ namespace CultistPlugin
     {
         private static String originalText = null;
 
+        static bool Prefix(IntroCutscene.CoBegin__d __instance)
+        {
+            if (PlayerControl.LocalPlayer == InitialCultist)
+            {
+                var cultistTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
+                cultistTeam.Add(PlayerControl.LocalPlayer);
+                __instance.yourTeam = cultistTeam;
+            }
+
+            return true;
+        }
+
         static void Postfix(IntroCutscene.CoBegin__d __instance)
         {
             if (IsCultistUsed)
