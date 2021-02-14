@@ -25,7 +25,7 @@ namespace CultistPlugin
         {
             if (IsCultistUsed)
             {
-                CultistMod.LastConversion = DateTime.UtcNow.AddSeconds(__instance.timer - CultistConversionCooldown);
+                CultistMod.LastConversion = DateTime.UtcNow; //.AddSeconds(__instance.timer);
 
                 if (PlayerControl.LocalPlayer == InitialCultist)
                 {

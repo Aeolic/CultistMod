@@ -75,6 +75,13 @@ namespace CultistPlugin
                             return;
                         }
 
+                        if (IsCultist(__instance.exiledPlayer.PlayerId) && amntAliveCrewmates > 0 &&
+                            amntAliveCultists <= 1 && amntAliveImpostors == 0)
+                        {
+                            CLog.Info("Crewmates WIN BY VOTING last Cultists OFF, not creating dummy.!");
+                            return;
+                        }
+
                         //if last impostor just got kicked, might need to create dummy if cultists left in the game
                         if (amntAliveImpostors == 1 && amntAliveCultists > 0 && __instance.exiledPlayer.IsImpostor)
                         {

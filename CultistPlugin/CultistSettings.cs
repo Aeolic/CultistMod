@@ -16,8 +16,7 @@
         {
             IsCultistUsed = CultistPlugin.UseCultist.GetValue();
             CultistVisionModifier = CultistPlugin.CultistVisionModifier.GetValue();
-            //TODO USE AFTER TESTING CultistConversionCooldown = CultistPlugin.CultistConversionCooldown.GetValue();
-            CultistConversionCooldown = 1;
+            CultistConversionCooldown = CultistPlugin.CultistConversionCooldown.GetValue();
             MaxCultistConversions = (int) CultistPlugin.CultistConversions.GetValue();
             ImpostorConversionAttemptUsesConversion = CultistPlugin.ImpostorConversionAttemptUsesConversion.GetValue();
             DoCrewmatesWinWhenImpostorsAreDead = CultistPlugin.CrewWinsWhenImpDead.GetValue();
