@@ -37,10 +37,10 @@ namespace CultistPlugin
             CustomOption.AddToggle("Cultist Lead Is Passed Upon Death", true);
 
         public static CustomNumberOption
-            CultistConversions = CustomOption.AddNumber("Cultist Conversions", 2, 1, 10, 1);
+            CultistConversions = CustomOption.AddNumber("Cultist Conversions", 3, 1, 10, 1);
 
         public static CustomNumberOption CultistConversionCooldown =
-            CustomOption.AddNumber("Cooldown Between Conversions", 90f, 10f, 180f, 5f);
+            CustomOption.AddNumber("Cooldown Between Conversions", 60f, 10f, 180f, 5f);
 
         public static CustomNumberOption CultistVisionModifier =
             CustomOption.AddNumber("Cultist Vision Modifier", 0.7f, 0.3f, 1.5f, 0.1f);
