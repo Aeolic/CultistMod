@@ -1,5 +1,7 @@
-﻿using HarmonyLib;
+﻿using System;
+using HarmonyLib;
 using Hazel;
+using UnityEngine;
 using static CultistPlugin.CultistMod;
 using static CultistPlugin.CultistSettings;
 
@@ -9,19 +11,54 @@ namespace CultistPlugin
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.Die))]
     public class DiePatch
     {
-        public static void Postfix(DeathReason OECOPGMHMKC)
+        public static void Prefix()
         {
-            if (CultistSettings.IsCultistUsed && !IsLastMurderFromCultistWin)
+            if (IsCultistUsed)
+            {
+                DisableGameEnd = true;
+            }
+        }
+
+        public static void Postfix(PlayerControl __instance, DeathReason OECOPGMHMKC)
+        {
+            if (IsCultistUsed)
             {
                 if (CheckCultistWin())
                 {
-                    CLog.Info("CULTIST WIN THROUGH MURDER!");
+                    CLog.Info("CULTIST WIN THROUGH DEATH!");
 
                     ExecuteCultistWin();
                 }
+
+                if (__instance.PlayerId == InitialCultist.PlayerId && CultistLeadIsPassedOnDeath)
+                {
+                    CLog.Info("CULTIST LEADER DIED, ASSIGNING NEW LEADER");
+                    foreach (var player in PlayerControl.AllPlayerControls
+                    ) //TODO use another way that guarantees the same order for all players
+                    {
+                        if (IsCultist(player.PlayerId) && player.PlayerId != InitialCultist.PlayerId)
+                        {
+                            CLog.Info("NEW CULT LEADER:" + player.name);
+                            InitialCultist = player;
+                            LastConversion = DateTime.UtcNow;
+
+                            player.myTasks.Clear();
+
+                            ImportantTextTask convertedTask =
+                                new GameObject("CultistLeaderTask").AddComponent<ImportantTextTask>();
+                            convertedTask.transform.SetParent(player.transform, false);
+
+                            convertedTask.Text =
+                                "The cult leader died.\nYou are the new cult leader.\nConvert crewmates to your cult.\nConversions left:" +
+                                ConversionsLeft + "/" + MaxCultistConversions;
+                            player.myTasks.Insert(0, convertedTask);
+                            break;
+                        }
+                    }
+                }
             }
 
-            IsLastMurderFromCultistWin = false;
+            DisableGameEnd = false;
         }
     }
 

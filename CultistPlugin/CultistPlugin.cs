@@ -13,7 +13,7 @@ namespace CultistPlugin
     public class CultistPlugin : BasePlugin
     {
         public const string Id = "gg.reactor.cultistmod";
-
+        public const string ModVersion = "1.0.0";
         public Harmony Harmony { get; } = new Harmony(Id);
 
         //I am using Reactor Essentials by DorCoMaNdO for these settings
@@ -22,25 +22,28 @@ namespace CultistPlugin
         // but I am giving credit here and in the Credits Tab in the readme
         // If there is any Problem with this, hit me up on Discord @ Aeolic#5560
 
-        public static CustomToggleOption UseCultist = CustomOption.AddToggle("Play with Cultist", true);
+        public static CustomToggleOption UseCultist = CustomOption.AddToggle("Enable Cultist", true);
 
         public static CustomToggleOption CrewWinsWhenImpDead =
-            CustomOption.AddToggle("Crewmates win on Impostor Death", true);
+            CustomOption.AddToggle("Crewmates Win On Impostor Death", true);
 
         public static CustomToggleOption ImpostorConversionAttemptUsesConversion =
-            CustomOption.AddToggle("Impostor Conversion Attempts reduces Conversions", true);
+            CustomOption.AddToggle("Impostor Conversion Attempts Reduces Conversions", true);
 
         public static CustomToggleOption CultistsKnowEachOther =
-            CustomOption.AddToggle("Cultists know who the other cultists are", false);
+            CustomOption.AddToggle("Cultists Know Who The Other Cultists Are", false);
 
-        public static CustomNumberOption CultistConversionCooldown =
-            CustomOption.AddNumber("Cooldown between Conversions", 90f, 10f, 180f, 5f);
-
-        public static CustomNumberOption CultistVisionModifier =
-            CustomOption.AddNumber("Cultist Vision Modifier", 0.7f, 0.3f, 1.5f, 0.1f);
+        public static CustomToggleOption CultistLeadIsPassedOnDeath =
+            CustomOption.AddToggle("Cultist Lead Is Passed Upon Death", true);
 
         public static CustomNumberOption
             CultistConversions = CustomOption.AddNumber("Cultist Conversions", 2, 1, 10, 1);
+
+        public static CustomNumberOption CultistConversionCooldown =
+            CustomOption.AddNumber("Cooldown Between Conversions", 90f, 10f, 180f, 5f);
+
+        public static CustomNumberOption CultistVisionModifier =
+            CustomOption.AddNumber("Cultist Vision Modifier", 0.7f, 0.3f, 1.5f, 0.1f);
 
         public override void Load()
         {

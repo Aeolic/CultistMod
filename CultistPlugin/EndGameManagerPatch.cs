@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using HarmonyLib;
+﻿using HarmonyLib;
+using System.Collections.Generic;
 using static CultistPlugin.CultistMod;
 using static CultistPlugin.CultistSettings;
 
@@ -10,32 +10,39 @@ namespace CultistPlugin
     {
         public static void Prefix(EndGameManager __instance)
         {
-            
-            if (TempData.DidHumansWin(TempData.EndReason))
             {
-                var toRemove = new List<WinningPlayerData>();
-
-                foreach (var winner in TempData.winners)
+                if (DidCultistsWin)
                 {
-                    CLog.Info("WINNER:" + winner.Name);
-
-                    CLog.Info("Checking if " + winner.Name + "is Cultist.");
-                    if (IsCultist(winner.Name))
+                    Il2CppSystem.Collections.Generic.List<WinningPlayerData> newWinners =
+                        new Il2CppSystem.Collections.Generic.List<WinningPlayerData>();
+                    for (int i = 0; i < GameData.Instance.PlayerCount; i++)
                     {
-                        CLog.Info("Adding " + winner.Name + "to remove list.");
-                        toRemove.Add(winner);
+                        GameData.PlayerInfo playerInfo = GameData.Instance.AllPlayers[i];
+                        if (IsCultist(playerInfo.PlayerId))
+                        {
+                            newWinners.Add(new WinningPlayerData(playerInfo));
+                        }
                     }
+
+                    TempData.winners = newWinners;
                 }
 
-                foreach (var winnerToRemove in toRemove)
+                if (TempData.DidHumansWin(TempData.EndReason) && !DidCultistsWin)
                 {
-                    CLog.Info("Removing 1 Cultist!");
-                    TempData.winners.Remove(winnerToRemove);
-                }
+                    var toRemove = new List<WinningPlayerData>();
 
-                foreach (var winner in TempData.winners)
-                {
-                    CLog.Info("WINNER AFTER REMOVE:" + winner.Name);
+                    foreach (var winner in TempData.winners)
+                    {
+                        if (IsCultist(winner.Name))
+                        {
+                            toRemove.Add(winner);
+                        }
+                    }
+
+                    foreach (var winnerToRemove in toRemove)
+                    {
+                        TempData.winners.Remove(winnerToRemove);
+                    }
                 }
             }
         }
@@ -46,8 +53,8 @@ namespace CultistPlugin
             {
                 __instance.WinText.Color = CultistColor;
                 __instance.BackgroundBar.material.color = CultistColor;
-                
-                //TODO make color purple!
+
+                //TODO make text color purple!
 
 
                 if (IsCultist(PlayerControl.LocalPlayer.PlayerId))

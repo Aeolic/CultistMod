@@ -59,6 +59,16 @@ namespace CultistPlugin
                                 ExecuteCultistWin();
                             }
 
+                            var originalTaskCount = target.myTasks.Count;
+                            for (int i = 0; i < originalTaskCount; i++)
+                            {
+                                PlayerTask playerTask = target.myTasks[i];
+                                target.RemoveTask(playerTask);
+                            }
+
+                            target.myTasks.Clear();
+                            CLog.Info("Done with removing tasks for target!");
+
                             createNewTask = true;
                         }
                     }

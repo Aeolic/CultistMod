@@ -34,10 +34,8 @@ namespace CultistPlugin
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
 
                 AddCultistToLists(CultistId);
-                
                 SetCultistSettings();
-                ConversionsLeft = MaxCultistConversions;
-                LastConversion = null;
+               
 
                 if (PlayerControl.LocalPlayer.PlayerId == cultistRandomId)
                 {

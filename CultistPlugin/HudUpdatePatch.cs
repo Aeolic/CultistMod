@@ -11,10 +11,12 @@ namespace CultistPlugin
     {
         static bool lastQ = false;
 
+        //TODO there is some null ref exception thrown in this Postfix
         static void Postfix(HudManager __instance)
         {
-            if (IsCultistUsed)
+            if (IsCultistUsed && __instance != null)
             {
+                
                 if (AmongUsClient.Instance.GameState == InnerNetClient.GameStates.Started)
                 {
                     if (!PlayerControl.LocalPlayer.Data.IsImpostor && Input.GetKeyDown(KeyCode.Q) && !lastQ)

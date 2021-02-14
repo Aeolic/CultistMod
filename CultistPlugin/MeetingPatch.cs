@@ -14,15 +14,15 @@ namespace CultistPlugin
     {
         static void Prefix()
         {
-            CLog.Info("In Meeting Awake prefix");
-            CLog.Info("ImpostorDummyCount: " + ImpostorDummyCount);
-            if (ImpostorDummyCount > 0)
+            if (IsCultistUsed)
             {
-                KillDummy();
+                if (ImpostorDummyCount > 0)
+                {
+                    DisableGameEnd = true;
+                    KillDummy();
+                }
             }
         }
-
-       
     }
 
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.HandleProceed))]
@@ -40,13 +40,13 @@ namespace CultistPlugin
                 CLog.Info("In Postfix Meeting");
                 if (AmongUsClient.Instance.AmHost)
                 {
-                    CLog.Info("Instance was not null (THIS SHOULD ONLY BE REACHED FOR HOST!");
                     bool shouldCreateDummy = false;
 
                     if (__instance.exiledPlayer != null)
                     {
                         int amntAliveImpostors = 0;
                         int amntAliveCultists = 0;
+                        int amntAliveCrewmates = 0;
                         foreach (var player in PlayerControl.AllPlayerControls)
                         {
                             if (!player.Data.IsDead)
@@ -59,25 +59,30 @@ namespace CultistPlugin
                                 {
                                     amntAliveCultists++;
                                 }
+                                else
+                                {
+                                    amntAliveCrewmates++;
+                                }
                             }
                         }
 
                         CLog.Info("Alive Impostors: " + amntAliveImpostors + " amnt alive cultists: " +
                                   amntAliveCultists);
+                        if (!IsCultist(__instance.exiledPlayer.PlayerId) &&
+                            (amntAliveCultists > (amntAliveCrewmates + amntAliveImpostors - 1)))
+                        {
+                            CLog.Info("CULTISTS WIN BY VOTING OFF, not creating dummy.!");
+                            return;
+                        }
+
                         //if last impostor just got kicked, might need to create dummy if cultists left in the game
                         if (amntAliveImpostors == 1 && amntAliveCultists > 0 && __instance.exiledPlayer.IsImpostor)
                         {
                             shouldCreateDummy = true;
                         }
-
-                        // if the last Cultist is kicked, we dont need an dummy
-                        if (amntAliveCultists <= 1 && IsCultist(__instance.exiledPlayer.PlayerId))
-                        {
-                            shouldCreateDummy = false;
-                        }
                     }
                     // if there was an dummy already we need a new one, if the voting ended in a skip
-                    else if (ImpostorDummyCount > 0)
+                    if (ImpostorDummyCount > 0)
                     {
                         shouldCreateDummy = true;
                     }
@@ -87,7 +92,7 @@ namespace CultistPlugin
                         CLog.Info("Creating Dummy Impostor");
                         ImpostorDummyCount++;
                         var gameObject = new GameObject(nameof(ImpostorDummy)).DontDestroy();
-                        var dummy =gameObject.AddComponent<ImpostorDummy>();
+                        var dummy = gameObject.AddComponent<ImpostorDummy>();
                     }
                 }
 
@@ -98,11 +103,18 @@ namespace CultistPlugin
     }
 
     [HarmonyPatch(typeof(ExileController), nameof(ExileController.Begin))]
-    class MeetingEnd
+    class ExileControllerPatch
     {
         static void Postfix(ExileController __instance)
         {
-            LastConversion = DateTime.UtcNow.AddMilliseconds(__instance.Duration);
+            if (IsCultistUsed)
+            {
+                LastConversion = DateTime.UtcNow.AddMilliseconds(__instance.Duration);
+                if (CheckCultistWin())
+                {
+                    ExecuteCultistWin();
+                }
+            }
         }
     }
 

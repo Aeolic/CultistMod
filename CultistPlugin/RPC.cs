@@ -54,10 +54,18 @@ namespace CultistPlugin
     {
         static void Prefix(byte HKHMBLJFLMC, MessageReader ALMCIJKELCP)
         {
-            byte byteParam = HKHMBLJFLMC;
-            MessageReader reader = ALMCIJKELCP;
+            if (IsCultistUsed)
+            {
+                byte byteParam = HKHMBLJFLMC;
+                MessageReader reader = ALMCIJKELCP;
 
-            CLog.Info("Got RPC call: " + byteParam + " Msg Length: " + reader.Length);
+                CLog.Info("Got RPC call: " + byteParam + " Msg Length: " + reader.Length);
+
+                if (HKHMBLJFLMC == (byte) RPC.MurderPlayer)
+                {
+                    DisableGameEnd = true;
+                }
+            }
         }
 
         static void Postfix(byte HKHMBLJFLMC, MessageReader ALMCIJKELCP)
@@ -83,8 +91,6 @@ namespace CultistPlugin
 
                     CLog.Info("Setting Cultist Settings");
                     SetCultistSettings();
-                    ConversionsLeft = MaxCultistConversions;
-                    LastConversion = null;
 
                     CLog.Info("Cultist list after cultist set through RPC:");
 
@@ -147,9 +153,11 @@ namespace CultistPlugin
                         {
                             ExecuteCultistWin();
                         }
-                        
                     }
 
+                    break;
+                case (byte) RPC.MurderPlayer:
+                    DisableGameEnd = false;
                     break;
             }
         }

@@ -9,7 +9,7 @@ namespace CultistPlugin
     {
         public static void Postfix(ref float __result, GameData.PlayerInfo IIEKJBMPELC)
         {
-            if (IsCultist(IIEKJBMPELC.PlayerId))
+            if ( IsCultistUsed && IsCultist(IIEKJBMPELC.PlayerId))
             {
                 __result = __result * CultistVisionModifier;
             }
@@ -21,12 +21,12 @@ namespace CultistPlugin
     {
         public static bool Prefix()
         {
-            if (DisableGameEnd)
+            if (!IsCultistUsed)
             {
-                return false;
+                return true;
             }
 
-            return true;
+            return !DisableGameEnd;
         }
     }
 }

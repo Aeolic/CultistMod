@@ -10,25 +10,23 @@
         public static bool ImpostorConversionAttemptUsesConversion;
         public static bool DoCrewmatesWinWhenImpostorsAreDead;
         public static bool CultistsKnowEachOther;
+        public static bool CultistLeadIsPassedOnDeath;
 
         public static void SetCultistSettings()
         {
             IsCultistUsed = CultistPlugin.UseCultist.GetValue();
             CultistVisionModifier = CultistPlugin.CultistVisionModifier.GetValue();
-            CultistConversionCooldown = CultistPlugin.CultistConversionCooldown.GetValue();
+            //TODO USE AFTER TESTING CultistConversionCooldown = CultistPlugin.CultistConversionCooldown.GetValue();
+            CultistConversionCooldown = 1;
             MaxCultistConversions = (int) CultistPlugin.CultistConversions.GetValue();
             ImpostorConversionAttemptUsesConversion = CultistPlugin.ImpostorConversionAttemptUsesConversion.GetValue();
             DoCrewmatesWinWhenImpostorsAreDead = CultistPlugin.CrewWinsWhenImpDead.GetValue();
             CultistsKnowEachOther = CultistPlugin.CultistsKnowEachOther.GetValue();
+            CultistLeadIsPassedOnDeath = CultistPlugin.CultistLeadIsPassedOnDeath.GetValue();
 
-            // CLog.Info("After Settings set:");
-            // CLog.Info("IsUsed:" + IsCultistUsed);
-            // CLog.Info("CultistVisionModifier " + CultistVisionModifier);
-            // CLog.Info("CultistConversionCooldown " + CultistConversionCooldown);
-            // CLog.Info("MaxCultistConversions " + MaxCultistConversions);
-            // CLog.Info("ImpostorConversionAttemptUsesConversion " + ImpostorConversionAttemptUsesConversion);
-            // CLog.Info("DoCrewmatesWinWhenImpostorsAreDead " + DoCrewmatesWinWhenImpostorsAreDead);
-            // CLog.Info("CultistsKnowEachOther " + CultistsKnowEachOther);
+            CultistMod.ConversionsLeft = MaxCultistConversions;
+            CultistMod.LastConversion = null;
+            CultistMod.ImpostorDummyCount = 0;
         }
     }
 }

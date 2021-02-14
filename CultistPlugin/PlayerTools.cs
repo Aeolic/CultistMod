@@ -4,7 +4,6 @@ using System;
 //this class is copied from https://github.com/NotHunter101/ExtraRolesAmongUs and modified/shortened
 namespace CultistPlugin
 {
-    [HarmonyPatch]
     public static class PlayerTools
     {
         public static PlayerControl closestPlayer = null;

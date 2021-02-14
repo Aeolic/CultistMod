@@ -26,9 +26,7 @@ namespace CultistPlugin
         public static List<String> CultistNameList = new List<String>();
 
         public static bool DidCultistsWin = false;
-
-        public static bool IsLastMurderFromCultistWin = false;
-
+        
         //TODO swap dummy count for bool "hasDummy"
         public static int ImpostorDummyCount = 0;
         public static bool DisableGameEnd = false;
@@ -45,9 +43,9 @@ namespace CultistPlugin
             return CultistNameList.IndexOf(playerName) != -1;
         }
 
-      
+
         public static Color CultistColor = new Color(100f / 255f, 20f / 255f, 200f / 255f, 1);
-        
+
         public static void AddCultistToLists(PlayerControl playerControl)
         {
             if (!IsCultist(playerControl.PlayerId))
@@ -81,6 +79,9 @@ namespace CultistPlugin
 
         public static bool CheckCultistWin()
         {
+            
+            CLog.Info("CHECK CULTIST WIN:");
+            
             int alive = 0;
             int cultists = 0;
             foreach (PlayerControl player in PlayerControl.AllPlayerControls)
@@ -91,6 +92,7 @@ namespace CultistPlugin
                     if (IsCultist(player.PlayerId))
                     {
                         cultists++;
+                        CLog.Info("FOUND ALIVE CULTIST: " + player.name);
                     }
                 }
             }
@@ -105,12 +107,14 @@ namespace CultistPlugin
                 CLog.Info("-----CULTIST WIN-----");
                 return true;
             }
+            else{CLog.Info("Cultists did not win.");}
 
             return false;
         }
 
         public static void ExecuteCultistWin()
         {
+            CLog.Info("Executing WIN");
             DidCultistsWin = true;
 
             DisableGameEnd = true;
@@ -127,17 +131,12 @@ namespace CultistPlugin
                 {
                     if (!player.Data.IsDead)
                     {
-                        IsLastMurderFromCultistWin = true;
-                        player.MurderPlayer(player);
+                        //player.MurderPlayer(player);
                         player.Data.IsDead = true;
                     }
 
                     player.RemoveInfected();
                     player.Data.IsImpostor = false;
-                }
-                else
-                {
-                    player.Data.IsImpostor = true;
                 }
             }
 
