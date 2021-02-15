@@ -96,10 +96,15 @@ namespace CultistPlugin
 
                     if (shouldCreateDummy)
                     {
+                        
                         CLog.Info("Creating Dummy Impostor");
+                        DisableGameEnd = true;
                         ImpostorDummyCount++;
                         var gameObject = new GameObject(nameof(ImpostorDummy)).DontDestroy();
                         var dummy = gameObject.AddComponent<ImpostorDummy>();
+                        
+                        //this means DisableEndGame stays true until after the Death which is Important
+                        return;
                     }
                 }
 
