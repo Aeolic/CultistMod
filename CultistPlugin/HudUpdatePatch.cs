@@ -30,7 +30,13 @@ namespace CultistPlugin
                     DistLocalClosest =
                         PlayerTools.getDistBetweenPlayers(PlayerControl.LocalPlayer, PlayerTools.closestPlayer);
 
-                    if (InitialCultist.PlayerId == PlayerControl.LocalPlayer.PlayerId &&
+                    if (ConversionsLeft <= 0)
+                    {
+                        KillButton.gameObject.SetActive(false);
+                        KillButton.isActive = false;
+                    }
+
+                    else if (InitialCultist.PlayerId == PlayerControl.LocalPlayer.PlayerId &&
                         __instance.UseButton.isActiveAndEnabled)
                     {
                         KillButton.gameObject.SetActive(true);
@@ -53,6 +59,7 @@ namespace CultistPlugin
                         }
                     }
 
+                    // adds purple color during the game and meetings depending on settings
                     if (IsCultist(PlayerControl.LocalPlayer.PlayerId))
                     {
                         PlayerControl.LocalPlayer.nameText.Color = CultistColor;

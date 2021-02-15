@@ -93,7 +93,7 @@ namespace CultistPlugin
                         cultLeaderTask.transform.SetParent(player.transform, false);
 
                         cultLeaderTask.Text =
-                            "You are the cult leader.\nConvert crewmates to join your cult.\nConversions left: " +
+                            "You are the cult leader.\nConvert crewmates to your cult.\nConversions left: " +
                             ConversionsLeft + "/" + MaxCultistConversions;
                         player.myTasks.Clear();
                         player.myTasks.Insert(0, cultLeaderTask);
