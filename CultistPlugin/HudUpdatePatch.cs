@@ -17,7 +17,7 @@ namespace CultistPlugin
             if (IsCultistUsed && __instance != null)
             {
                 
-                if (AmongUsClient.Instance.GameState == InnerNetClient.GameStates.Started)
+                if (AmongUsClient.Instance.GameState == InnerNetClient.GameStates.Started && __instance.KillButton != null)
                 {
                     if (!PlayerControl.LocalPlayer.Data.IsImpostor && Input.GetKeyDown(KeyCode.Q) && !lastQ)
                     {
