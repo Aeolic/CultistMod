@@ -126,6 +126,8 @@ namespace CultistPlugin
                         }
                     }
 
+                    ConversionsLeft--;
+
                     if (CheckCultistWin())
                     {
                         CLog.Info("Cultists won by conversion.");
