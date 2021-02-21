@@ -35,7 +35,7 @@ __Default: True__\
 When enabled, the game will assign the Cultist Role to one random Non-Impostor. When disabled
 the game starts without using the Cultist Mod.
 
-### Crewmates Win On Impostor Death
+### Crew Wins VS Cult
 __Default: True__\
 When enabled, the (non-cultist) crewmates will win when the last Impostor dies. When disabled, the game continues
 and the crewmates win by either completing their tasks or by voting all Cultists out.
@@ -43,17 +43,17 @@ and the crewmates win by either completing their tasks or by voting all Cultists
 _Hint: This settings changes gameplay by quite a bit. For example: If enabled, the Cultists sometimes have to be careful to not vote out
 the last Impostor, because they would lose instantly. This setting still might be quite buggy! I advise to keep it on True for now!_
 
-### Impostor Conversion Attempts Reduces Conversions
+### Fail Conversion Uses Attempt (Impostor Conversion Attempts Reduces Conversions)
 __Default: True__\
 When enabled, the amount of conversions will be reduced by one, even if the conversion 
 target was an Impostor. The conversion will always be on cooldown after an conversion attempt, regardless of the target.
 
-### Cultists Know Who The Other Cultists Are
+### Cult Knows Who Is Cult
 __Default: False__\
 When enabled, the converted Cultists will know who the other Cultists are, because their names will be marked in purple.
 The Cultist Leader will always know who the other Cultists are, and all Cultists always know who the leader is.
 
-### Cultist Lead Is Passed Upon Death
+### Pass Cult Lead on Death
 __Default: True__\
 When enabled, another Cultist will take the place of the Cultist Leader, if the Leader dies. When disabled, the Cult
 can't recruit any more members after the Cultist Leader is dead.
