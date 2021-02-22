@@ -64,7 +64,7 @@ The maximum amount of conversions the cult can use over the course of the game.
 
 ### Cooldown Between Conversions
 __Default: 60 Seconds__\
-How long the cultists have to wait between conversions.
+How long the cultists have to wait between conversions. __Playtesting has revealed that this is too long for the cult to be competitive in most scenarios. This will be decreased in further releases.__
 
 ### Cultist Vision Modifier
 __Default: 0.7__\
