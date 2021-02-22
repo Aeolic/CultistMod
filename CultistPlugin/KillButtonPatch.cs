@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using HarmonyLib;
 using Hazel;
 using UnityEngine;
@@ -26,6 +27,11 @@ namespace CultistPlugin
             if (PlayerControl.LocalPlayer.Data.IsDead)
             {
                 return false;
+            }
+
+            if (PlayerControl.LocalPlayer.Data.IsImpostor)
+            {
+                return true;
             }
 
             if (IsCultistUsed && CurrentTarget != null && !PlayerControl.LocalPlayer.Data.IsImpostor)
@@ -59,11 +65,18 @@ namespace CultistPlugin
                                 ExecuteCultistWin();
                             }
 
-                            var originalTaskCount = target.myTasks.Count;
-                            for (int i = 0; i < originalTaskCount; i++)
+                            var tasksToRemove = new List<PlayerTask>();
+                            foreach (var task in target.myTasks)
                             {
-                                PlayerTask playerTask = target.myTasks[i];
-                                target.RemoveTask(playerTask);
+                                if (task.TaskType != TaskTypes.FixComms && task.TaskType != TaskTypes.FixLights &&
+                                    task.TaskType != TaskTypes.ResetReactor &&
+                                    task.TaskType != TaskTypes.ResetSeismic && task.TaskType != TaskTypes.RestoreOxy)
+                                    tasksToRemove.Add(task);
+                            }
+
+                            foreach (var taskToRemove in tasksToRemove)
+                            {
+                                player.RemoveTask(taskToRemove);
                             }
 
                             target.myTasks.Clear();
@@ -88,6 +101,14 @@ namespace CultistPlugin
 
                     if (createNewTask)
                     {
+                        
+                        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(
+                            PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.ConversionsLeft, Hazel.SendOption.None,
+                            -1);
+                        writer.Write(ConversionsLeft);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        
+                        
                         ImportantTextTask cultLeaderTask =
                             new GameObject("CultistLeaderTask").AddComponent<ImportantTextTask>();
                         cultLeaderTask.transform.SetParent(player.transform, false);

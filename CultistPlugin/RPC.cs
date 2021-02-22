@@ -45,7 +45,8 @@ namespace CultistPlugin
     {
         SetCultist = 58,
         ConvertAction = 59,
-        KillDummy = 60
+        KillDummy = 60,
+        ConversionsLeft = 61
     }
 
 
@@ -120,13 +121,13 @@ namespace CultistPlugin
                             convertedTask.transform.SetParent(player.transform, false);
 
                             convertedTask.Text =
-                                "You got converted to the cult.\nHelp your cult leader convert other crewmates.";
+                                PlayerTools.getPlayerById(CultistThatCalledId).name +
+                                " converted you to the cult.\nHelp your cult leader convert other crewmates.";
 
                             player.myTasks.Insert(0, convertedTask);
                         }
                     }
 
-                    ConversionsLeft--;
 
                     if (CheckCultistWin())
                     {
@@ -160,6 +161,10 @@ namespace CultistPlugin
                     break;
                 case (byte) RPC.MurderPlayer:
                     DisableGameEnd = false;
+                    break;
+                case (byte) CustomRPC.ConversionsLeft:
+                    byte conversionsLeft = ALMCIJKELCP.ReadByte();
+                    ConversionsLeft = conversionsLeft;
                     break;
             }
         }

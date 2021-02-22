@@ -11,7 +11,7 @@ namespace CultistPlugin
     {
         static bool lastQ = false;
 
-        //TODO there is some null ref exception thrown in this Postfix
+        //TODO there is some null ref exception thrown in this Postfix everytime the game starts (only after the first game)
         static void Postfix(HudManager __instance)
         {
             if (IsCultistUsed && __instance != null)
@@ -58,6 +58,7 @@ namespace CultistPlugin
                             CurrentTarget = null;
                         }
                     }
+
 
                     // adds purple color during the game and meetings depending on settings
                     if (IsCultist(PlayerControl.LocalPlayer.PlayerId))

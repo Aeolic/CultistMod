@@ -36,7 +36,7 @@ namespace CultistPlugin
                     foreach (var player in PlayerControl.AllPlayerControls
                     ) //TODO use another way that guarantees the same order for all playersd
                     {
-                        if (IsCultist(player.PlayerId) && player.PlayerId != InitialCultist.PlayerId)
+                        if (IsCultist(player.PlayerId) && player.PlayerId != InitialCultist.PlayerId && !player.Data.IsDead)
                         {
                             CLog.Info("NEW CULT LEADER:" + player.name);
                             InitialCultist = player;

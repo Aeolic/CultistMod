@@ -1,29 +1,36 @@
-﻿using HarmonyLib;
+﻿using System.Collections.Generic;
+using HarmonyLib;
 using Il2CppSystem.Text;
 using UnityEngine;
 using static CultistPlugin.CultistSettings;
 
 namespace CultistPlugin
 {
+    //FIXME for the host (only for the host), a NRE gets thrown once (only in the second time the coroutine is executed)
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.SetTasks))]
     public class TaskPatch
     {
         public static void Postfix(PlayerControl __instance)
         {
-            if (IsCultistUsed)
+            if (IsCultistUsed && InitialCultist != null)
             {
-                int originalTaskCount = 0;
                 foreach (var player in PlayerControl.AllPlayerControls)
                 {
                     //TODO create proper reusable methods for this
-                    if (player.PlayerId == CultistSettings.InitialCultist.PlayerId)
+                    //TODO enable fake tasks for cultis
+                    //TODO Or something interesting like ritual 
+                    if (player.PlayerId == InitialCultist.PlayerId)
                     {
                         CLog.Info("Removing tasks for cultist:");
-                        originalTaskCount = player.myTasks.Count;
-                        for (int i = 0; i < originalTaskCount; i++)
+                        var tasksToRemove = new List<PlayerTask>();
+                        foreach (var task in player.myTasks)
                         {
-                            PlayerTask playerTask = player.myTasks[i];
-                            player.RemoveTask(playerTask);
+                            tasksToRemove.Add(task);
+                        }
+
+                        foreach (var taskToRemove in tasksToRemove)
+                        {
+                            player.RemoveTask(taskToRemove);
                         }
 
                         player.myTasks.Clear();
@@ -35,7 +42,7 @@ namespace CultistPlugin
 
                         convertedTask.Text =
                             "You are the cult leader.\nConvert crewmates to your cult.\nConversions left: " +
-                            CultistMod.ConversionsLeft + "/" + CultistSettings.MaxCultistConversions;
+                            CultistMod.ConversionsLeft + "/" + MaxCultistConversions;
                         player.myTasks.Insert(0, convertedTask);
                     }
                 }
