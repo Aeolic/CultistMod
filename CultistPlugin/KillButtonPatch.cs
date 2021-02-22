@@ -28,7 +28,7 @@ namespace CultistPlugin
                 return false;
             }
 
-            if (IsCultistUsed && CurrentTarget != null)
+            if (IsCultistUsed && CurrentTarget != null && !PlayerControl.LocalPlayer.Data.IsImpostor)
             {
                 PlayerControl target = CurrentTarget;
 

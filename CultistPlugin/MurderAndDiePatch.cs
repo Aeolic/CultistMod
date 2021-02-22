@@ -34,7 +34,7 @@ namespace CultistPlugin
                 {
                     CLog.Info("CULTIST LEADER DIED, ASSIGNING NEW LEADER");
                     foreach (var player in PlayerControl.AllPlayerControls
-                    ) //TODO use another way that guarantees the same order for all players
+                    ) //TODO use another way that guarantees the same order for all playersd
                     {
                         if (IsCultist(player.PlayerId) && player.PlayerId != InitialCultist.PlayerId)
                         {

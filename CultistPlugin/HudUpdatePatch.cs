@@ -16,8 +16,8 @@ namespace CultistPlugin
         {
             if (IsCultistUsed && __instance != null)
             {
-                
-                if (AmongUsClient.Instance.GameState == InnerNetClient.GameStates.Started && __instance.KillButton != null)
+                if (AmongUsClient.Instance.GameState == InnerNetClient.GameStates.Started &&
+                    __instance.KillButton != null)
                 {
                     if (!PlayerControl.LocalPlayer.Data.IsImpostor && Input.GetKeyDown(KeyCode.Q) && !lastQ)
                     {
@@ -30,14 +30,14 @@ namespace CultistPlugin
                     DistLocalClosest =
                         PlayerTools.getDistBetweenPlayers(PlayerControl.LocalPlayer, PlayerTools.closestPlayer);
 
-                    if (ConversionsLeft <= 0)
+                    if (InitialCultist.PlayerId == PlayerControl.LocalPlayer.PlayerId && ConversionsLeft <= 0)
                     {
                         KillButton.gameObject.SetActive(false);
                         KillButton.isActive = false;
                     }
 
                     else if (InitialCultist.PlayerId == PlayerControl.LocalPlayer.PlayerId &&
-                        __instance.UseButton.isActiveAndEnabled)
+                             __instance.UseButton.isActiveAndEnabled)
                     {
                         KillButton.gameObject.SetActive(true);
                         KillButton.isActive = true;
