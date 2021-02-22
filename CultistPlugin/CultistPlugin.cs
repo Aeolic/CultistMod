@@ -13,7 +13,7 @@ namespace CultistPlugin
     public class CultistPlugin : BasePlugin
     {
         public const string Id = "gg.reactor.cultistmod";
-        public const string ModVersion = "1.0.2";
+        public const string ModVersion = "1.0.3";
         public Harmony Harmony { get; } = new Harmony(Id);
 
         //I am using Reactor Essentials by DorCoMaNdO for these settings
