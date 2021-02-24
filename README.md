@@ -86,7 +86,9 @@ __This mod will only work with Among Us Version v2020.12.9s__
 
 (Basically the same as any other BepInEx/Reactor Mod, so I copied the instructions from [here](https://github.com/NotHunter101/ExtraRolesAmongUs/blob/main/README.md#instructions).)
 
-
+# Usage
+Using and playing this Mod is completely free. When doing a video on this mod, please link this repository and my [twitter](https://twitter.com/AeolicEDM) in the description/a pinned comment :)
+It is advised that you play on a custom server and not on the official innersloth servers (although it is possible to do so).
 
 # Bugs
 With the Cultists being a third faction, there will probably be some bugs, especially some where the wrong winners are shown! I tried to handle all
